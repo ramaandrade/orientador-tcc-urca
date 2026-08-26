@@ -1,0 +1,39 @@
+﻿# CRITÉRIOS VERIFICADOS NA PESQUISA TCC 2 da URCA
+
+1. TÍTULO
+* O título indica de forma clara o que a pesquisa se propõe?
+
+2. INTRODUÇÃO
+* Contextualização: Apresenta o tema de forma geral, situando o leitor no campo de estudo. O que já se sabe sobre este assunto? Qual é o panorama geral em que esta pesquisa se insere?
+* Justificativa: Explica a relevância e a importância da sua pesquisa. Ela responde à pergunta: "Por que este estudo é importante?". Quem se beneficiará com os resultados? Qual a contribuição teórica, prática ou social do estudo?
+* Objetivos: Descreve o que você pretende alcançar com a sua pesquisa. Eles são as metas que guiam seu trabalho (objetivo geral e objetivos específicos).
+* Problema de Pesquisa: Define a lacuna de conhecimento que a sua pesquisa pretende preencher. Qual é a questão específica que ainda não foi resolvida?
+* Relevância e Contribuição: Detalha o impacto potencial do seu trabalho (academia, sociedade ou área específica). Que novo conhecimento trará?
+* Estrutura do Trabalho: Oferece um breve roteiro do que o leitor encontrará em cada capítulo ou seção do seu trabalho.
+
+3. METODOLOGIA
+* Natureza e Abordagem: Qualitativa, quantitativa ou mista? A pesquisa é exploratória, descritiva ou explicativa? Justifique a escolha e o alinhamento aos objetivos.
+* Desenho da Pesquisa (Delineamento): Estudo de caso, pesquisa-ação, estudo etnográfico ou análise documental? Detalhe o design escolhido.
+* Campo de Pesquisa e Unidade de Análise: Delimite o local, a população ou o grupo social (indivíduo, organização, documento). Limites precisos do estudo.
+* Amostragem: Método de seleção (intencional, por conveniência, aleatória ou estratificada) e critérios para inclusão ou exclusão de participantes/documentos.
+* Coleta de Dados: Detalhe os instrumentos e procedimentos (entrevistas semiestruturadas, grupos focais, análise de documentos, questionários), logística e ética.
+* Análise dos Dados: Explique como os dados serão processados (análise de conteúdo, discurso, temática, estatística descritiva/inferencial em SPSS ou R).
+
+4. REFERENCIAL TEÓRICO
+* Conceitos-Chave e Definições: Principais conceitos que sustentam a pesquisa definidos por autores clássicos e contemporâneos.
+* Estado da Arte (Revisão da Literatura): Panorama das pesquisas mais importantes já realizadas, teorias consolidadas e lacunas identificadas.
+* Diálogo com a Literatura: Interação ativa com a literatura, comparação de perspectivas, convergências e divergências.
+
+5. RESULTADOS E DISCUSSÕES (EXCLUSIVO TCC 2)
+* Apresentação dos Resultados: Mostrar de forma clara e organizada os dados obtidos (tabelas, gráficos ou descrições compreensíveis).
+* Análise Crítica: Interpretar os resultados à luz dos objetivos e do referencial teórico. Os dados respondem ao problema de pesquisa?
+* Comparação com a Literatura: Relacionar os achados com estudos prévios, identificando convergências e divergências com outros autores.
+* Relevância dos Achados: Destacar a contribuição prática, acadêmica ou social dos resultados obtidos.
+* Limitações: Reconhecer as limitações da pesquisa que podem ter afetado ou restringido a abrangência dos resultados.
+
+6. CONSIDERAÇÕES FINAIS (EXCLUSIVO TCC 2)
+* Síntese: Retomar de forma objetiva o que foi desenvolvido, destacando os principais achados da pesquisa.
+* Resposta ao Problema: Indicar de que forma a pesquisa respondeu à questão central proposta.
+* Contribuições: Explicar as contribuições teóricas, metodológicas e práticas do trabalho.
+* Recomendações: Sugerir aplicações práticas dos resultados ou indicações para gestores, instituições ou pesquisadores.
+* Pesquisas Futuras: Indicar lacunas que permanecem e sugerir novos caminhos para investigações posteriores.

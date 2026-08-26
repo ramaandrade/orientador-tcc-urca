@@ -1,0 +1,30 @@
+﻿# CRITÉRIOS VERIFICADOS NA PESQUISA TCC 1 da URCA
+
+1. TÍTULO
+* O título indica de forma clara o que a pesquisa se propõe?
+
+2. INTRODUÇÃO
+* Contextualização: Apresenta o tema de forma geral, situando o leitor no campo de estudo. O que já se sabe sobre este assunto? Qual é o panorama geral?
+* Justificativa: Explica a relevância e a importância da sua pesquisa (teórica, prática ou social). Por que é relevante e quem se beneficiará?
+* Objetivos: Descreve o que se pretende alcançar com a pesquisa. Objetivo geral e objetivos específicos como metas que guiam o estudo.
+* Problema de Pesquisa: Define a lacuna de conhecimento que a pesquisa pretende preencher (pergunta direta e clara).
+* Relevância e Contribuição: Detalha o novo conhecimento gerado e o impacto potencial para a academia e a sociedade.
+* Estrutura do Trabalho: Oferece um breve roteiro do que o leitor encontrará nas seções subsequentes.
+
+3. METODOLOGIA
+* Natureza e Abordagem: Qualitativa, quantitativa ou mista? Exploratória, descritiva ou explicativa? Justificativa da escolha alinhada ao problema.
+* Desenho da Pesquisa (Delineamento): Estudo de caso, pesquisa-ação, etnográfico ou análise documental.
+* Campo de Pesquisa e Unidade de Análise: Delimitação precisa do local, organização, grupo social ou população estudada.
+* Amostragem: Critérios de seleção da amostra (intencional, conveniência ou probabilística) e critérios de inclusão/exclusão.
+* Coleta de Dados: Instrumentos e procedimentos (entrevistas semiestruturadas, questionários, observação), logística e ética.
+* Análise dos Dados: Técnicas de processamento e interpretação (análise de conteúdo, temática, estatística descritiva/inferencial).
+
+4. REFERENCIAL TEÓRICO
+* Conceitos-Chave e Definições: Vocabulário comum e conceitos centrais definidos por autores clássicos e contemporâneos.
+* Estado da Arte (Revisão da Literatura): Panorama das pesquisas recentes, teorias consolidadas e identificação de lacunas.
+* Diálogo com a Literatura: Interação ativa com os autores, comparação de perspectivas, convergências e divergências.
+
+5. NOTAS ESTRUTURAIS EXCLUSIVAS DE TCC 1:
+* Resultados e Discussões: NÃO FAZ PARTE DO TCC 1 (exclusivo do TCC 2).
+* Considerações Finais: NÃO FAZ PARTE DO TCC 1 (exclusivo do TCC 2).
+* Referências (ABNT): Formatação obrigatória segundo as normas ABNT NBR 6023.
