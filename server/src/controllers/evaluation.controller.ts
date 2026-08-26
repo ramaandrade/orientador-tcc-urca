@@ -3,6 +3,7 @@ import path from 'path';
 import { prisma } from '../database/db';
 import { aiEvaluatorService } from '../services/ai_evaluator.service';
 import { whatsAppService } from '../services/whatsapp.service';
+import { pdfGeneratorService } from '../services/pdf_generator.service';
 
 export const getEvaluationsByStudent = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -273,20 +274,81 @@ export const sendEvaluationWhatsApp = async (req: Request, res: Response): Promi
       return;
     }
 
-    const message = `Olá, *${student.name.split(' ')[0]}*! 🎓\n\nSeu orientador e a coordenação disponibilizaram o parecer de avaliação da sua pesquisa:\n\n📌 *${evaluation.stageTitle}*\n📄 *Arquivo:* ${evaluation.fileName}\n⭐ *Nota/Parecer Preliminar:* ${evaluation.suggestedGrade || 'Aprovado'}\n\n🔍 *Recomendações e Correções:* \n${evaluation.improvements}\n\nQualquer dúvida, consulte seu orientador no portal acadêmico!`;
+    // 1. Generate official Academic Evaluation PDF File
+    console.log(`[Evaluation Controller] 📄 Gerando arquivo PDF do parecer para ${student.name}...`);
+    const pdfDoc = await pdfGeneratorService.generateEvaluationPdf({
+      studentName: student.name,
+      studentGroup: student.group,
+      studentPhone: student.phone,
+      studentTopic: student.topic,
+      stageTitle: evaluation.stageTitle,
+      stageNumber: evaluation.stageNumber,
+      fileName: evaluation.fileName,
+      suggestedGrade: evaluation.suggestedGrade,
+      sourceFileName: evaluation.sourceFileName,
+      evaluationReport: evaluation.evaluationReport,
+      createdAt: evaluation.createdAt,
+    });
+    console.log(`[Evaluation Controller] ✅ PDF gerado com sucesso em: ${pdfDoc.filePath}`);
 
-    const result = await whatsAppService.sendMessage(student.phone, message);
+    // 2. Caption for WhatsApp
+    const caption = `Olá, *${student.name.split(' ')[0]}*! 🎓\n\nSegue em anexo o *Parecer Didático Oficial* da sua pesquisa (*${evaluation.stageTitle}*).\n\n📄 *Arquivo Avaliado:* ${evaluation.fileName}\n⭐ *Nota/Parecer Preliminar:* ${evaluation.suggestedGrade || 'Aprovado'}\n\nAbra o documento PDF anexo para conferir o diagnóstico detalhado e as orientações passo a passo!\n\nQualquer dúvida, consulte seu orientador no portal acadêmico!`;
+
+    // 3. Send PDF Document Attachment via WhatsApp
+    const result = await whatsAppService.sendMessage(student.phone, caption, {
+      filePath: pdfDoc.filePath,
+      originalName: `Parecer Didático - ${evaluation.stageTitle}.pdf`,
+      mimeType: 'application/pdf',
+    });
 
     if (!result.success) {
-      res.status(500).json({ success: false, error: result.error || 'Falha ao enviar mensagem de avaliação' });
+      res.status(500).json({ success: false, error: result.error || 'Falha ao enviar documento do parecer via WhatsApp' });
       return;
     }
 
     res.json({
       success: true,
-      message: `Parecer da ${evaluation.stageTitle} enviado com sucesso para ${student.name} (+${student.phone})`,
+      message: `Arquivo PDF do parecer (${evaluation.stageTitle}) enviado com sucesso para ${student.name} (+${student.phone})`,
+      pdfUrl: `/uploads/${path.basename(pdfDoc.filePath)}`,
     });
   } catch (err: any) {
+    console.error('[Evaluation Controller] Erro ao enviar PDF do parecer:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+export const downloadEvaluationPdfFile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    const evaluation = await prisma.evaluation.findUnique({ where: { id } });
+    if (!evaluation) {
+      res.status(404).json({ success: false, error: 'Avaliação não encontrada' });
+      return;
+    }
+
+    const student = await prisma.student.findUnique({ where: { id: evaluation.studentId } });
+    if (!student) {
+      res.status(404).json({ success: false, error: 'Aluno não encontrado' });
+      return;
+    }
+
+    const pdfDoc = await pdfGeneratorService.generateEvaluationPdf({
+      studentName: student.name,
+      studentGroup: student.group,
+      studentPhone: student.phone,
+      studentTopic: student.topic,
+      stageTitle: evaluation.stageTitle,
+      stageNumber: evaluation.stageNumber,
+      fileName: evaluation.fileName,
+      suggestedGrade: evaluation.suggestedGrade,
+      sourceFileName: evaluation.sourceFileName,
+      evaluationReport: evaluation.evaluationReport,
+      createdAt: evaluation.createdAt,
+    });
+
+    res.download(pdfDoc.filePath, `Parecer_Didatico_${student.name.replace(/\s+/g, '_')}_Etapa_${evaluation.stageNumber}.pdf`);
+  } catch (err: any) {
+    console.error('[Evaluation Controller] Erro ao baixar PDF:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 };

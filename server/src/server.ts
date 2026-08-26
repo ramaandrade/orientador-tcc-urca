@@ -126,6 +126,7 @@ app.get('/api/project-models/:group', evaluationCtrl.getProjectModel);
 app.post('/api/project-models/:group', upload.single('file'), evaluationCtrl.uploadProjectModel);
 app.delete('/api/project-models/:group', evaluationCtrl.deleteProjectModel);
 
+app.get('/api/evaluations/:id/pdf', evaluationCtrl.downloadEvaluationPdfFile);
 app.post('/api/evaluations/:id/send-whatsapp', evaluationCtrl.sendEvaluationWhatsApp);
 app.delete('/api/evaluations/:id', evaluationCtrl.deleteEvaluationStage);
 
