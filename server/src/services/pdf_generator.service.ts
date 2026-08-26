@@ -16,6 +16,23 @@ export interface EvaluationPdfData {
   createdAt: string | Date;
 }
 
+/**
+ * Sanitizes markdown string to prevent PDF font encoding artifacts and symbol corruption
+ */
+function sanitizePdfText(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/[\u{1F300}-\u{1F9FF}]/gu, '') // Remove all emoji blocks
+    .replace(/[\u{2600}-\u{26FF}]/gu, '')
+    .replace(/[\u{2700}-\u{27BF}]/gu, '')
+    .replace(/↳/g, '->')                    // Replace unicode arrow with ASCII
+    .replace(/—/g, ' - ')                   // Replace em-dash with hyphen
+    .replace(/–/g, '-')                    // Replace en-dash with hyphen
+    .replace(/[“”]/g, '"')                  // Replace curly quotes
+    .replace(/[‘’]/g, "'")
+    .trim();
+}
+
 export class PdfGeneratorService {
   /**
    * Generates an official academic evaluation PDF file and returns its absolute path
@@ -45,30 +62,30 @@ export class PdfGeneratorService {
       const mutedColor = '#64748b'; // Slate 500
       const cardBg = '#f8fafc'; // Slate 50
       const cardBorder = '#cbd5e1';
+      const contentWidth = doc.page.width - 80;
 
-      // --- HEADER ---
-      doc.rect(40, 36, doc.page.width - 80, 4).fill(primaryColor);
-      doc.moveDown(0.6);
+      // --- 1. HEADER ACCENT ---
+      doc.rect(40, 36, contentWidth, 4).fill(primaryColor);
 
-      // Title & Subtitle
-      doc.font('Helvetica-Bold').fontSize(14).fillColor(darkColor).text('PARECER DIDÁTICO DE AVALIAÇÃO ACADÊMICA', 40, 48);
-      doc.font('Helvetica').fontSize(9).fillColor(mutedColor).text('Coordenação Acadêmica de TPE & TCC | Sistema Orientador IA — URCA', 40, 65);
+      // --- 2. HEADER TITLE & SUBTITLE ---
+      doc.font('Helvetica-Bold').fontSize(13.5).fillColor(darkColor).text('PARECER DIDÁTICO DE AVALIAÇÃO ACADÊMICA', 40, 48);
+      doc.font('Helvetica').fontSize(8.5).fillColor(mutedColor).text('Coordenação Acadêmica de TPE & TCC | Sistema Orientador IA — URCA', 40, 64);
 
-      // Badge on top right
-      const badgeText = data.stageTitle || `Etapa ${data.stageNumber || 1}`;
-      const badgeWidth = doc.widthOfString(badgeText, { font: 'Helvetica-Bold', size: 9 }) + 16;
+      // --- 3. STAGE BADGE (TOP RIGHT) ---
+      const badgeText = sanitizePdfText(data.stageTitle || `Etapa ${data.stageNumber || 1}`);
+      const badgeWidth = doc.widthOfString(badgeText, { font: 'Helvetica-Bold', size: 8.5 }) + 16;
       const badgeX = doc.page.width - 40 - badgeWidth;
-      doc.roundedRect(badgeX, 48, badgeWidth, 20, 10).fillAndStroke('#f0fdf4', '#bbf7d0');
-      doc.font('Helvetica-Bold').fontSize(9).fillColor('#166534').text(badgeText, badgeX + 8, 54);
+      doc.roundedRect(badgeX, 46, badgeWidth, 18, 9).fillAndStroke('#f0fdf4', '#bbf7d0');
+      doc.font('Helvetica-Bold').fontSize(8.5).fillColor('#166534').text(badgeText, badgeX + 8, 51);
 
-      // --- INFO CARD ---
-      const cardY = 82;
-      const cardHeight = data.sourceFileName ? 90 : 78;
-      doc.roundedRect(40, cardY, doc.page.width - 80, cardHeight, 6).fillAndStroke(cardBg, cardBorder);
+      // --- 4. INFO CARD METADATA ---
+      const cardY = 78;
+      const cardHeight = data.sourceFileName ? 96 : 84;
+      doc.roundedRect(40, cardY, contentWidth, cardHeight, 5).fillAndStroke(cardBg, cardBorder);
 
-      const col1X = 52;
-      const col2X = 300;
-      let lineY = cardY + 8;
+      const col1X = 50;
+      const col2X = 310;
+      let lineY = cardY + 7;
       const step = 14;
 
       const evalDate = new Date(data.createdAt);
@@ -78,126 +95,161 @@ export class PdfGeneratorService {
 
       // Row 1
       doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text('Discente: ', col1X, lineY, { continued: true })
-         .font('Helvetica').fillColor('#334155').text(data.studentName);
+         .font('Helvetica').fillColor('#334155').text(sanitizePdfText(data.studentName));
       doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text('Turma / Nível: ', col2X, lineY, { continued: true })
-         .font('Helvetica').fillColor('#334155').text(data.studentGroup);
+         .font('Helvetica').fillColor('#334155').text(sanitizePdfText(data.studentGroup));
 
       // Row 2
       lineY += step;
       doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text('WhatsApp: ', col1X, lineY, { continued: true })
-         .font('Helvetica').fillColor('#334155').text(`+${data.studentPhone}`);
+         .font('Helvetica').fillColor('#334155').text(`+${sanitizePdfText(data.studentPhone)}`);
       doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text('Data da Avaliação: ', col2X, lineY, { continued: true })
          .font('Helvetica').fillColor('#334155').text(dateStr);
 
       // Row 3
       lineY += step;
       doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text('Arquivo Avaliado: ', col1X, lineY, { continued: true })
-         .font('Helvetica').fillColor('#334155').text(data.fileName);
+         .font('Helvetica').fillColor('#334155').text(sanitizePdfText(data.fileName));
       doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text('Nota / Conceito: ', col2X, lineY, { continued: true })
-         .font('Helvetica-Bold').fillColor(primaryColor).text(data.suggestedGrade || 'Aprovado');
+         .font('Helvetica-Bold').fillColor(primaryColor).text(sanitizePdfText(data.suggestedGrade || 'Aprovado'));
 
       // Row 4: Topic
       lineY += step;
       doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text('Título da Pesquisa: ', col1X, lineY, { continued: true })
-         .font('Helvetica-Oblique').fillColor('#334155').text(data.studentTopic || 'Não informado', { width: doc.page.width - 100 });
+         .font('Helvetica-Oblique').fillColor('#334155').text(sanitizePdfText(data.studentTopic || 'Não informado'), { width: contentWidth - 30 });
 
       // Row 5: Source file if present
       if (data.sourceFileName) {
         lineY += step;
         doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text('Fonte de Confronto: ', col1X, lineY, { continued: true })
-           .font('Helvetica').fillColor('#334155').text(data.sourceFileName);
+           .font('Helvetica').fillColor('#334155').text(sanitizePdfText(data.sourceFileName), { width: contentWidth - 30 });
       }
 
-      // --- SECTION TITLE ---
-      const sectionY = cardY + cardHeight + 14;
-      doc.rect(40, sectionY, 4, 14).fill(primaryColor);
-      doc.font('Helvetica-Bold').fontSize(10).fillColor(darkColor).text('DIAGNÓSTICO DIDÁTICO (INCONFORMIDADES & O QUE FAZER PASSO A PASSO)', 50, sectionY + 2);
+      // --- 5. SECTION TITLE ---
+      const secY = cardY + cardHeight + 12;
+      doc.rect(40, secY, 4, 13).fill(primaryColor);
+      doc.font('Helvetica-Bold').fontSize(9.5).fillColor(darkColor).text('DIAGNÓSTICO DIDÁTICO (INCONFORMIDADES & O QUE FAZER PASSO A PASSO)', 48, secY + 2);
 
-      doc.y = sectionY + 22;
+      doc.y = secY + 20;
 
-      // --- RENDER MARKDOWN REPORT ---
-      const rawLines = data.evaluationReport.split('\n');
-      
+      // --- 6. RENDER BODY CONTENT WITHOUT DUPLICATE PREAMBLE ---
+      let bodyText = data.evaluationReport;
+      const firstSectionIdx = bodyText.indexOf('#### ');
+      if (firstSectionIdx !== -1) {
+        bodyText = bodyText.substring(firstSectionIdx);
+      }
+
+      const rawLines = bodyText.split('\n');
+
       for (let i = 0; i < rawLines.length; i++) {
-        const line = rawLines[i].trim();
-        if (!line) {
-          doc.moveDown(0.25);
+        const rawLine = rawLines[i].trim();
+        if (!rawLine) {
+          doc.moveDown(0.2);
           continue;
         }
 
-        // Check if page overflow
-        if (doc.y > doc.page.height - 60) {
-          doc.addPage();
-        }
+        const clean = sanitizePdfText(rawLine);
+        if (!clean) continue;
 
-        if (line.startsWith('#### ')) {
-          // Major Section (e.g. 1. TÍTULO, 2. INTRODUÇÃO)
-          doc.moveDown(0.5);
-          const titleText = line.replace(/^####\s*/, '').replace(/\*\*/g, '');
+        if (clean.startsWith('#### ')) {
+          // Major Section Header (e.g. 1. TÍTULO, 2. INTRODUÇÃO)
+          if (doc.y > doc.page.height - 85) doc.addPage();
           
-          const headerY = doc.y;
-          doc.roundedRect(40, headerY, doc.page.width - 80, 18, 4).fillAndStroke('#f1f5f9', '#e2e8f0');
-          doc.font('Helvetica-Bold').fontSize(9.5).fillColor(primaryColor).text(titleText, 48, headerY + 4);
-          doc.y = headerY + 22;
-        } else if (line.startsWith('##### ')) {
-          // Subsection (e.g. A. Coerência entre os Pontos)
+          doc.moveDown(0.5);
+          const title = clean.replace(/^####\s*/, '').replace(/\*\*/g, '');
+          const hY = doc.y;
+          doc.roundedRect(40, hY, contentWidth, 18, 3).fillAndStroke('#f1f5f9', '#cbd5e1');
+          doc.font('Helvetica-Bold').fontSize(9.5).fillColor(primaryColor).text(title, 48, hY + 4, { width: contentWidth - 16 });
+          doc.y = hY + 22;
+        } else if (clean.startsWith('##### ')) {
+          // Subsection Header (e.g. A. Coerência entre os Pontos)
+          if (doc.y > doc.page.height - 65) doc.addPage();
           doc.moveDown(0.3);
-          const subText = line.replace(/^#####\s*/, '').replace(/\*\*/g, '');
-          doc.font('Helvetica-Bold').fontSize(9).fillColor(darkColor).text(subText, 46);
+          const subTitle = clean.replace(/^#####\s*/, '').replace(/\*\*/g, '');
+          doc.font('Helvetica-Bold').fontSize(9).fillColor(darkColor).text(subTitle, 44, doc.y, { width: contentWidth - 8 });
           doc.moveDown(0.15);
-        } else if (line.startsWith('---')) {
+        } else if (clean.startsWith('---')) {
           // Horizontal divider
           doc.moveDown(0.2);
           doc.strokeColor('#e2e8f0').lineWidth(0.5).moveTo(40, doc.y).lineTo(doc.page.width - 40, doc.y).stroke();
           doc.moveDown(0.2);
-        } else if (line.startsWith('* **') || line.startsWith('• **')) {
-          // Key items (e.g. * **Análise do Critério:** ...)
-          const cleanLine = line.replace(/^[\*•]\s*/, '');
-          const match = cleanLine.match(/^\*\*(.*?)\*\*(.*)/);
-          if (match) {
-            const boldLabel = match[1];
-            const restText = match[2].replace(/\*\*/g, '');
-            doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text(`• ${boldLabel}`, 48, doc.y, { continued: true })
-               .font('Helvetica').fillColor('#334155').text(restText, { width: doc.page.width - 95 });
+        } else if (clean.startsWith('* **') || clean.startsWith('• **')) {
+          // Bullet point with bold prefix (e.g. * **Análise do Critério:** ...)
+          if (doc.y > doc.page.height - 55) doc.addPage();
+          const itemText = clean.replace(/^[\*•]\s*/, '');
+          const boldMatch = itemText.match(/^\*\*(.*?)\*\*(.*)/);
+          if (boldMatch) {
+            const label = boldMatch[1].trim();
+            const rest = boldMatch[2].replace(/\*\*/g, '').trim();
+            if (rest.length > 0) {
+              doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text(`• ${label} `, 44, doc.y, {
+                continued: true,
+                lineGap: 2.5,
+                width: contentWidth - 10
+              });
+              doc.font('Helvetica').fillColor('#334155').text(rest, {
+                lineGap: 2.5,
+                width: contentWidth - 10
+              });
+            } else {
+              doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text(`• ${label}`, 44, doc.y, {
+                lineGap: 2.5,
+                width: contentWidth - 10
+              });
+            }
           } else {
-            doc.font('Helvetica').fontSize(8.5).fillColor('#334155').text(`• ${cleanLine.replace(/\*\*/g, '')}`, 48, doc.y, { width: doc.page.width - 95 });
+            doc.font('Helvetica').fontSize(8.5).fillColor('#334155').text(`• ${itemText.replace(/\*\*/g, '')}`, 44, doc.y, {
+              lineGap: 2.5,
+              width: contentWidth - 10
+            });
           }
-        } else if (/^\d+\.\s+\*\*/.test(line)) {
-          // Numbered items with bold title (e.g. 1. **Incongruência...**)
-          const numMatch = line.match(/^(\d+\.)\s+\*\*(.*?)\*\*(.*)/);
+          doc.moveDown(0.2);
+        } else if (/^\d+\.\s+/.test(clean)) {
+          // Numbered items (e.g. 1. O título omite...)
+          if (doc.y > doc.page.height - 55) doc.addPage();
+          const numMatch = clean.match(/^(\d+\.)\s+(.*)/);
           if (numMatch) {
             const num = numMatch[1];
-            const title = numMatch[2];
-            const rest = numMatch[3].replace(/\*\*/g, '');
-            doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text(`   ${num} ${title}`, 52, doc.y, { continued: true })
-               .font('Helvetica').fillColor('#334155').text(rest, { width: doc.page.width - 100 });
-          } else {
-            doc.font('Helvetica').fontSize(8.5).fillColor('#334155').text(`   ${line.replace(/\*\*/g, '')}`, 52, doc.y, { width: doc.page.width - 100 });
+            const rest = numMatch[2].replace(/\*\*/g, '').trim();
+            doc.font('Helvetica-Bold').fontSize(8.5).fillColor(darkColor).text(`  ${num} `, 48, doc.y, {
+              continued: true,
+              lineGap: 2.5,
+              width: contentWidth - 16
+            });
+            doc.font('Helvetica').fillColor('#334155').text(rest, {
+              lineGap: 2.5,
+              width: contentWidth - 16
+            });
           }
-        } else if (line.startsWith('* ') || line.startsWith('• ') || line.startsWith('- ')) {
-          // Sub-bullet solutions
-          const cleanSub = line.replace(/^[\*•\-]\s*/, '').replace(/\*\*/g, '');
-          doc.font('Helvetica').fontSize(8.5).fillColor('#334155').text(`     ↳ ${cleanSub}`, 56, doc.y, { width: doc.page.width - 105 });
+          doc.moveDown(0.2);
+        } else if (clean.startsWith('* ') || clean.startsWith('• ') || clean.startsWith('- ')) {
+          // Solution sub-bullet (e.g. * Ajustar o título...)
+          if (doc.y > doc.page.height - 55) doc.addPage();
+          const subItem = clean.replace(/^[\*•\-]\s*/, '').replace(/\*\*/g, '').trim();
+          doc.font('Helvetica').fontSize(8.5).fillColor('#334155').text(`     - ${subItem}`, 52, doc.y, {
+            lineGap: 2.5,
+            width: contentWidth - 20
+          });
+          doc.moveDown(0.15);
         } else {
-          // Regular paragraphs
-          doc.font('Helvetica').fontSize(8.5).fillColor('#334155').text(line.replace(/\*\*/g, ''), 48, doc.y, { width: doc.page.width - 95 });
+          // Regular paragraph text
+          if (doc.y > doc.page.height - 55) doc.addPage();
+          doc.font('Helvetica').fontSize(8.5).fillColor('#334155').text(clean.replace(/\*\*/g, ''), 44, doc.y, {
+            lineGap: 2.5,
+            width: contentWidth - 10
+          });
+          doc.moveDown(0.2);
         }
       }
 
-      // --- PAGE NUMBERING & FOOTER ON ALL PAGES ---
+      // --- 7. FOOTER ON ALL PAGES ---
       const totalPages = doc.bufferedPageRange().count;
       for (let i = 0; i < totalPages; i++) {
         doc.switchToPage(i);
-
-        // Footer line
-        const footerY = doc.page.height - 30;
-        doc.strokeColor('#cbd5e1').lineWidth(0.5).moveTo(40, footerY - 6).lineTo(doc.page.width - 40, footerY - 6).stroke();
-
-        doc.font('Helvetica').fontSize(7.5).fillColor(mutedColor)
-           .text(`Documento oficial de parecer didático gerado pelo Sistema Orientador IA em ${new Date().toLocaleDateString('pt-BR')}`, 40, footerY);
-
-        doc.font('Helvetica-Bold').fontSize(7.5).fillColor(mutedColor)
-           .text(`Página ${i + 1} de ${totalPages}`, doc.page.width - 120, footerY, { align: 'right', width: 80 });
+        const fY = doc.page.height - 28;
+        doc.strokeColor('#cbd5e1').lineWidth(0.5).moveTo(40, fY - 4).lineTo(doc.page.width - 40, fY - 4).stroke();
+        doc.font('Helvetica').fontSize(7.5).fillColor(mutedColor).text('Documento oficial de parecer didático gerado pelo Sistema Orientador IA — URCA', 40, fY);
+        doc.font('Helvetica-Bold').fontSize(7.5).fillColor(mutedColor).text(`Página ${i + 1} de ${totalPages}`, doc.page.width - 120, fY, { align: 'right', width: 80 });
       }
 
       doc.end();
