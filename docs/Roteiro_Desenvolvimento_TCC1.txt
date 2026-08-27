@@ -1,0 +1,38 @@
+﻿# Roteiro de Desenvolvimento do TCC 1
+
+PASSO 1 — ELEMENTOS PRÉ-TEXTUAIS (1 página)
+* Título: Claro, delimitado e com abordagem teórica explícita.
+* Autoria e Filiação: Pedro Ramon de Oliveira Vilar (URCA - Ciências Econômicas, Crato-CE. Orientador: Prof. Ramá Lucas Andrade).
+* Resumo: Redigir por último (150 a 250 palavras) — somente em TCC 2.
+* Abstract: Tradução fiel do resumo para o inglês.
+* Palavras-chave: 3 a 5 termos centrais separados por ponto e vírgula.
+
+PASSO 2 — SEÇÃO 1: INTRODUÇÃO (2 a 3 páginas)
+Fundir em texto corrido único sem subtítulos:
+* Bloco 1 — Contextualização (3 a 4 parágrafos): Panorama geral, transformação do SFN, transição de modelos e dados quantitativos.
+* Bloco 2 — Justificativa (2 parágrafos): Relevância acadêmica (lacuna teórica) e prática (subsídios para reguladores e gestores).
+* Bloco 3 — Problema de Pesquisa (1 parágrafo): Pergunta direta definindo a lacuna de conhecimento.
+* Bloco 4 — Hipótese (1 parágrafo): Hipótese de trabalho consistente com a Teoria da Inovação Disruptiva.
+* Bloco 5 — Objetivos (1 a 2 parágrafos): Objetivo geral e 3 objetivos específicos fluidos.
+* Bloco 6 — Estrutura do Artigo (1 parágrafo): Apresentação das seções subsequentes.
+
+PASSO 3 — SEÇÃO 2: METODOLOGIA (1,5 a 2 páginas)
+* 2.1 Classificação e Delineamento da Pesquisa: Abordagem quantitativa, delineamento e justificativa consciente da amostra (Gil e Creswell).
+* 2.2 Unidade de Análise e Amostragem: Definição dos grupos, instituições e critérios de inclusão/exclusão.
+* 2.3 Instrumentos e Coleta: Extração de dados oficiais e maturidade metodológica nas limitações.
+* 2.4 Processamento e Análise: Fórmulas, indicadores, correlação e organização visual dos dados para o TCC 2.
+
+PASSO 4 — SEÇÃO 3: REFERENCIAL TEÓRICO (5 a 6 páginas)
+* Subseção 3.1 — Teoria da Inovação Disruptiva e Setor Financeiro (Christensen, Lepore, Gans).
+* Subseção 3.2 — Economias de Escala, Barreiras à Entrada e GPTs (Jovanovic & Rousseau, Berger & Humphrey).
+* Subseção 3.3 — Papel Regulatório do Banco Central (BCB, Philippon, King, North/Williamson).
+* Parágrafo Final — Estado da Arte: Posicionamento explícito da lacuna que o artigo preenche (período 2019-2025).
+
+PASSO 5 — REFERÊNCIAS (1 a 1,5 página - ABNT NBR 6023:2018)
+
+AVISOS OBRIGATÓRIOS DO COLEGIADO:
+1. Trabalho de expansão e aprofundamento, não de reescrita total.
+2. Maior esforço na Seção 3 (Referencial Teórico deve ter 5 a 6 páginas).
+3. Elimine o Cronograma (não faz parte do artigo científico).
+4. Funda os elementos da introdução em texto corrido único.
+5. Escreva o resumo por último (somente na versão de TCC 2).
