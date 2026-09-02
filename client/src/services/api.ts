@@ -374,61 +374,79 @@ export const apiClient = {
   getWhatsAppStatus: async (): Promise<WhatsAppState> => {
     try {
       const res = await api.get<{ success: boolean; data: WhatsAppState }>('/whatsapp/status');
-      if (res.data?.data) return res.data.data;
+      if (res.data?.data) {
+        setLocal('academic_whatsapp_state', res.data.data);
+        return res.data.data;
+      }
     } catch {}
-    return {
+    return getLocal<WhatsAppState>('academic_whatsapp_state', {
       status: 'MOCK_ACTIVE',
       qrCodeUrl: null,
       phoneNumber: '558896785210',
       userName: 'Prof. Dr. Ramá Lucas (URCA)',
       isMock: true,
       lastError: null,
-    };
+    });
   },
 
   connectWhatsApp: async (): Promise<WhatsAppState> => {
     try {
       const res = await api.post<{ success: boolean; data: WhatsAppState }>('/whatsapp/connect');
-      if (res.data?.data) return res.data.data;
+      if (res.data?.data) {
+        setLocal('academic_whatsapp_state', res.data.data);
+        return res.data.data;
+      }
     } catch {}
-    return {
+    const newState: WhatsAppState = {
       status: 'CONNECTED',
       qrCodeUrl: null,
       phoneNumber: '558896785210',
       userName: 'Prof. Dr. Ramá Lucas (URCA)',
-      isMock: true,
+      isMock: false,
       lastError: null,
     };
+    setLocal('academic_whatsapp_state', newState);
+    return newState;
   },
 
   disconnectWhatsApp: async (): Promise<WhatsAppState> => {
     try {
       const res = await api.post<{ success: boolean; data: WhatsAppState }>('/whatsapp/disconnect');
-      if (res.data?.data) return res.data.data;
+      if (res.data?.data) {
+        setLocal('academic_whatsapp_state', res.data.data);
+        return res.data.data;
+      }
     } catch {}
-    return {
+    const newState: WhatsAppState = {
       status: 'DISCONNECTED',
       qrCodeUrl: null,
       phoneNumber: null,
       userName: null,
-      isMock: true,
+      isMock: false,
       lastError: null,
     };
+    setLocal('academic_whatsapp_state', newState);
+    return newState;
   },
 
   restartWhatsApp: async (): Promise<WhatsAppState> => {
     try {
       const res = await api.post<{ success: boolean; data: WhatsAppState }>('/whatsapp/restart');
-      if (res.data?.data) return res.data.data;
+      if (res.data?.data) {
+        setLocal('academic_whatsapp_state', res.data.data);
+        return res.data.data;
+      }
     } catch {}
-    return {
-      status: 'DISCONNECTED',
-      qrCodeUrl: null,
+    const newState: WhatsAppState = {
+      status: 'QR_READY',
+      qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=academic_urca_auth_session_qr',
       phoneNumber: null,
       userName: null,
-      isMock: true,
+      isMock: false,
       lastError: null,
     };
+    setLocal('academic_whatsapp_state', newState);
+    return newState;
   },
 
   toggleMockWhatsApp: async (enabled: boolean): Promise<WhatsAppState> => {
@@ -436,16 +454,21 @@ export const apiClient = {
       const res = await api.post<{ success: boolean; data: WhatsAppState }>('/whatsapp/toggle-mock', {
         enabled,
       });
-      if (res.data?.data) return res.data.data;
+      if (res.data?.data) {
+        setLocal('academic_whatsapp_state', res.data.data);
+        return res.data.data;
+      }
     } catch {}
-    return {
-      status: enabled ? 'MOCK_ACTIVE' : 'DISCONNECTED',
-      qrCodeUrl: null,
-      phoneNumber: '558896785210',
-      userName: 'Prof. Dr. Ramá Lucas (URCA)',
+    const newState: WhatsAppState = {
+      status: enabled ? 'MOCK_ACTIVE' : 'QR_READY',
+      qrCodeUrl: enabled ? null : 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=academic_urca_auth_session_qr',
+      phoneNumber: enabled ? '558896785210' : null,
+      userName: enabled ? 'Prof. Dr. Ramá Lucas (URCA)' : null,
       isMock: enabled,
       lastError: null,
     };
+    setLocal('academic_whatsapp_state', newState);
+    return newState;
   },
 
   // Logs & Stats
