@@ -261,9 +261,33 @@ export const WhatsAppPage: React.FC<WhatsAppPageProps> = ({ state, onRefreshStat
           </div>
         </div>
 
-        {/* Right QR Code Box */}
+        {/* Right Info / QR Code Box */}
         <div className="md:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col items-center justify-center text-center space-y-4">
-          {state?.qrCodeUrl && !isMock && !isConnected ? (
+          {window.location.hostname.includes('github.io') ? (
+            <div className="space-y-4">
+              <div className="w-20 h-20 rounded-full bg-emerald-950/80 border-2 border-emerald-500 flex items-center justify-center text-emerald-400 mx-auto shadow-lg shadow-emerald-950">
+                <Smartphone className="w-10 h-10" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="font-bold text-sm text-emerald-300">Modo Web Nuvem (Disparo Direto)</h4>
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-900/50 text-emerald-300 text-[10px] font-bold border border-emerald-700/60">
+                  Sem necessidade de QR Code
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed max-w-xs">
+                Na versão web pública, você <strong>não precisa escanear QR Code</strong>. Ao clicar em <strong>"Enviar Parecer no WhatsApp"</strong>, a conversa com o aluno abre instantaneamente no seu WhatsApp com o parecer oficial preenchido!
+              </p>
+              <a
+                href="https://api.whatsapp.com/send?text=Olá!%20Mensagem%20de%20teste%20do%20Orientador%20TCC%20URCA"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-950 transition-all cursor-pointer"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                <span>Testar Abertura do WhatsApp</span>
+              </a>
+            </div>
+          ) : state?.qrCodeUrl && !isMock && !isConnected ? (
             <div className="space-y-3">
               <div className="bg-white p-3 rounded-2xl shadow-2xl inline-block border-4 border-emerald-500">
                 <img
