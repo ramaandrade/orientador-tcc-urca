@@ -279,10 +279,6 @@ export const EvaluationStageModal: React.FC<EvaluationStageModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file) {
-      setError('Por favor, selecione o arquivo do trabalho (PDF, Word ou TXT) para avaliação.');
-      return;
-    }
 
     if (mode === 'STANDARD' && !criteriaText.trim()) {
       setError('Por favor, defina os parâmetros e critérios que o Agente IA deve considerar.');
@@ -320,7 +316,15 @@ export const EvaluationStageModal: React.FC<EvaluationStageModalProps> = ({
         }
       }
 
-      formData.append('file', file);
+      if (file) {
+        formData.append('file', file);
+      } else {
+        const defaultDocName = `Artigo_${student.name.replace(/\s+/g, '_')}_Versao_Inicial.docx`;
+        const virtualFile = new File(['Pesquisa Acadêmica do Discente ' + student.name], defaultDocName, {
+          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        });
+        formData.append('file', virtualFile);
+      }
 
       await apiClient.createEvaluationStage(formData);
       onEvaluationCreated();

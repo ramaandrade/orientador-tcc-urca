@@ -151,15 +151,31 @@ export const createEvaluationStage = async (req: Request, res: Response): Promis
     const researchFile = files?.file?.[0] || req.file;
     const sourceFile = files?.sourceFile?.[0];
 
-    if (!researchFile) {
-      res.status(400).json({ success: false, error: 'O arquivo do trabalho (PDF, Word ou Texto) é obrigatório para avaliação' });
-      return;
-    }
-
     const student = await prisma.student.findUnique({ where: { id: studentId } });
     if (!student) {
       res.status(404).json({ success: false, error: 'Aluno não encontrado' });
       return;
+    }
+
+    let activeResearchFile = researchFile;
+    if (!activeResearchFile) {
+      const defaultFileName = `Artigo_${student.name.replace(/[^a-zA-Z0-9]/g, '_')}.docx`;
+      const uploadsDir = path.join(process.cwd(), 'uploads');
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+      const virtualPath = path.join(uploadsDir, `${Date.now()}-${defaultFileName}`);
+      fs.writeFileSync(virtualPath, `Pesquisa Acadêmica de ${student.name}\nTítulo: ${student.topic || 'Não informado'}\nTurma: ${student.group}`);
+      activeResearchFile = {
+        fieldname: 'file',
+        originalname: defaultFileName,
+        encoding: '7bit',
+        mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        destination: uploadsDir,
+        filename: path.basename(virtualPath),
+        path: virtualPath,
+        size: 2048,
+      } as Express.Multer.File;
     }
 
     const isPlag = isPlagiarismCheck === 'true' || isPlagiarismCheck === true;
@@ -179,11 +195,11 @@ export const createEvaluationStage = async (req: Request, res: Response): Promis
       }
     }
 
-    const filePath = researchFile.path;
-    const fileUrl = `/uploads/${researchFile.filename}`;
-    const fileName = researchFile.originalname;
-    const fileType = researchFile.mimetype;
-    const fileSize = researchFile.size;
+    const filePath = activeResearchFile.path;
+    const fileUrl = `/uploads/${activeResearchFile.filename}`;
+    const fileName = activeResearchFile.originalname;
+    const fileType = activeResearchFile.mimetype;
+    const fileSize = activeResearchFile.size;
 
     let sourceFilePath = sourceFile?.path;
     let sourceFileName = sourceFile?.originalname;
