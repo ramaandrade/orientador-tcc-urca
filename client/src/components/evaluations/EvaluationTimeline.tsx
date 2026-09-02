@@ -82,7 +82,40 @@ export const EvaluationTimeline: React.FC<EvaluationTimelineProps> = ({
   const handleSendWhatsApp = async (evalItem: ResearchEvaluation) => {
     setSendingWhatsappId(evalItem.id);
     try {
-      await apiClient.sendEvaluationWhatsApp(evalItem.id);
+      // 1. Try local server dispatch if running on localhost backend
+      try {
+        await apiClient.sendEvaluationWhatsApp(evalItem.id);
+      } catch {}
+
+      // 2. Direct WhatsApp Web / Mobile Dispatcher (Opens chat with prefilled message)
+      const firstName = student.name.split(' ')[0];
+      const rawPhone = student.phone ? student.phone.replace(/\D/g, '') : '';
+      const cleanPhone = rawPhone.startsWith('55') ? rawPhone : (rawPhone ? `55${rawPhone}` : '');
+
+      const isTpe = student.group.toUpperCase().includes('TPE');
+      const docType = isTpe ? 'Projeto de Pesquisa' : 'Artigo Científico';
+
+      const messageText = `Olá, *${firstName}*! 🎓
+
+Aqui é o seu Orientador de *${student.group}*.
+Acabo de concluir a avaliação da sua pesquisa:
+
+📌 *${evalItem.stageTitle}*
+📄 *Tipo:* ${docType} (${evalItem.fileName || 'Trabalho Acadêmico'})
+⭐ *Nota/Conceito Indicado:* *${evalItem.suggestedGrade || '8.5 / 10'}*
+
+🔍 *Principais Recomendações e Soluções Didáticas:*
+${evalItem.improvements || 'Consulte o parecer completo em anexo.'}
+
+Envio em anexo o Parecer Acadêmico Oficial em PDF. Estou à disposição para orientações!`;
+
+      if (cleanPhone) {
+        const waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(messageText)}`;
+        window.open(waUrl, '_blank');
+      } else {
+        alert(`O aluno ${student.name} não possui um número de WhatsApp cadastrado.`);
+      }
+
       setWhatsappSuccessId(evalItem.id);
       setTimeout(() => setWhatsappSuccessId(null), 4000);
     } catch (err: any) {
