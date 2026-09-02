@@ -768,6 +768,31 @@ export const EvaluationStageModal: React.FC<EvaluationStageModalProps> = ({
                     </a>
                   </div>
 
+                  {/* + Critérios TCC 2 Button & Link */}
+                  <div className="inline-flex items-center rounded-lg bg-indigo-950/90 border border-indigo-700 shadow-sm overflow-hidden ring-1 ring-indigo-500/20">
+                    <button
+                      type="button"
+                      onClick={() => addCriteriaSnippet(
+                        `Critérios Verificados na Pesquisa TCC 2 (URCA):\n• Título definitivo delimitado.\n• Introdução consolidada articulando problema e objetivos.\n• Metodologia executada (Delineamento, Unidade de análise, Amostragem, Coleta e Análise).\n• Referencial Teórico com conceitos e Estado da Arte.\n• Resultados e Discussões (TCC 2): Apresentação clara de tabelas/gráficos IBGE/ABNT, análise crítica, confrontação teórica e validação expressa das hipóteses.\n• Considerações Finais (TCC 2): Resposta ao problema, contribuições, recomendações práticas a gestores e novas investigações.`
+                      )}
+                      className="px-2.5 py-1 text-indigo-200 hover:text-white hover:bg-indigo-800 text-[11px] font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                      title="Acrescentar os Critérios Oficiais de TCC 2 aos parâmetros do agente"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>+ Critérios TCC 2</span>
+                    </button>
+                    <a
+                      href="/docs/Criterios_Pesquisa_TCC2_URCA.txt"
+                      target="_blank"
+                      rel="noreferrer"
+                      download="Criterios_Pesquisa_TCC2_URCA.txt"
+                      className="px-2 py-1 text-indigo-400 hover:text-white hover:bg-indigo-800 border-l border-indigo-700/80 transition-colors flex items-center"
+                      title="Baixar / Visualizar Arquivo de Critérios TCC 2"
+                    >
+                      <Download className="w-3 h-3" />
+                    </a>
+                  </div>
+
                   {/* + Correções 2 Button & Link */}
                   <div className="inline-flex items-center rounded-lg bg-purple-950/90 border border-purple-600 shadow-sm overflow-hidden ring-1 ring-purple-500/30">
                     <button
