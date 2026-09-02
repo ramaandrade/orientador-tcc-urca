@@ -148,11 +148,12 @@ Envio em anexo o Parecer Acadêmico Oficial em PDF. Estou à disposição para o
     const cleanReportHtml = (() => {
       let content = evalItem.evaluationReport;
       
-      // Unconditionally remove any Parâmetros or Pontos Fortes section or raw criteria quote blocks
+      // Unconditionally remove any Parâmetros, Pontos Fortes, or Cronograma sections
       content = content
         .replace(/####\s*(?:1|2)\.\s*🎯\s*Parâmetros[\s\S]*?(?=####\s*(?:1|2|3)\.\s*(?:⭐|🔍|🚀|🌟|🎯|Diagnóstico|Pontos))/i, '')
         .replace(/####\s*(?:1|2)\.\s*⭐\s*Pontos\s*Fortes[\s\S]*?(?=####\s*(?:1|2|3)\.\s*(?:🔍|🚀|🌟|🎯|Diagnóstico))/i, '')
         .replace(/####\s*2\.\s*📚\s*Fontes[\s\S]*?(?=####\s*(?:2|3)\.\s*🧭)/i, '')
+        .replace(/####\s*(?:5|6)\.\s*CRONOGRAMA[\s\S]*?(?=####\s*(?:6|7|8)\.|\z)/i, '')
         .replace(/###\s*📋[\s\S]*?---\s*/i, '')
         .replace(/###\s*🚀\s*Roteiro[\s\S]*?---\s*/i, '')
         .replace(/###\s*🛡️[\s\S]*?---\s*/i, '');

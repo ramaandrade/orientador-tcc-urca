@@ -691,16 +691,7 @@ export const apiClient = {
 
 ---
 
-#### 6. CRONOGRAMA DE EXECUÇÃO E VIABILIDADE (TCC 1 / TCC 2)
-* **Análise do Critério:** Planejamento temporal e viabilidade de execução do projeto de pesquisa nos semestres seguintes.
-* **Inconformidades:**
-  1. O cronograma deve prever detalhadamente os meses de: Revisão Teórica, Coleta de Dados no Campo, Qualificação (TCC 1), Análise dos Resultados e Defesa Final da Banca (TCC 2).
-* **Solução:**
-  * Inserir quadro de cronograma tabular no padrão da URCA dividindo as etapas mês a mês.
-
----
-
-#### 7. CONFORMIDADE COM O PROJETO MODELO DA TURMA (URCA)
+#### 6. CONFORMIDADE COM O PROJETO MODELO DA TURMA (URCA)
 * **Análise do Critério:** Aderência à estrutura formal estabelecida no Projeto Modelo oficial da turma de TPE (${sourceFileName || 'Projeto_Modelo.pdf'}).
 * **Inconformidades:**
   1. Elementos Pré-textuais e Estrutura: Assegurar que a capa, folha de rosto, sumário e seções estejam no formato padrão de Projeto de Pesquisa (ABNT NBR 15287).
@@ -709,12 +700,12 @@ export const apiClient = {
 
 ---
 
-#### 8. Parecer Geral do Projeto & Nota Preliminar da Etapa ${stageNum}
-* **Parecer do Agente:** **Projeto de Pesquisa Aprovado para Qualificação / Necessita de Ajustes Metodológicos para o TCC 1**
+#### 7. Parecer Geral do Projeto & Nota Preliminar da Etapa ${stageNum}
+* **Parecer do Agente:** **Projeto de Pesquisa Aprovado para Qualificação / Recomendado Ajustes Estruturais para o TCC 1**
 * **Nota Indicada nesta Etapa:** **8.5 / 10** (Conceito A-)`;
 
       strengths = '• Projeto de pesquisa estruturado conforme o Projeto Modelo da URCA com tema relevante e proposta bem delimitada.';
-      improvements = '• 1. Formalizar a pergunta de pesquisa e hipóteses;\n• 2. Detalhar a matriz metodológica de coleta futura;\n• 3. Inserir o cronograma de execução conforme o Projeto Modelo da URCA.';
+      improvements = '• 1. Formalizar a pergunta de pesquisa e hipóteses;\n• 2. Detalhar a matriz metodológica de coleta futura;\n• 3. Padronizar as seções conforme o Projeto Modelo da URCA.';
     } else {
       // ARTIGO CIENTÍFICO (TCC 1 / TCC 2 — Modelo Correções 2)
       evaluationReport = `#### 1. TÍTULO
