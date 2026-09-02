@@ -594,13 +594,107 @@ export const apiClient = {
     const students = getLocal<Student[]>('academic_students', initialData.students as any);
     const student = students.find((s) => s.id === studentId);
     const studentTopic = student?.topic || 'Pesquisa Acadêmica';
+    const isTpe = student?.group === 'TPE';
+    const isTcc1 = student?.group === 'TCC1';
     const isTcc2 = student?.group === 'TCC2';
 
     const evals = getLocal<ResearchEvaluation[]>('academic_evaluations', initialData.evaluations as any);
     const existingForStudent = evals.filter((e) => e.studentId === studentId);
     const stageNum = existingForStudent.length + 1;
 
-    const evaluationReport = `#### 1. TÍTULO
+    let evaluationReport = '';
+    let strengths = '';
+    let improvements = '';
+
+    if (isTpe) {
+      // PROJETO DE PESQUISA (TPE)
+      evaluationReport = `#### 1. TÍTULO E TEMA DO PROJETO DE PESQUISA
+* **Análise do Critério:** O título do projeto de pesquisa ("${studentTopic}") apresenta delimitação temática adequada e indica o recorte do objeto de estudo pretendido para o desenvolvimento do TCC.
+* **Inconformidades:**
+  1. O título deve explicitar claramente o enfoque teórico ou empírico que norteará a coleta futura de dados, evitando termos excessivamente amplos.
+* **Solução:**
+  * Refinar o título do projeto para delimitar com precisão o problema de investigação.
+  * Sugestão de redação: "${studentTopic.includes(':') ? studentTopic.split(':')[0] + ': Proposta de Pesquisa e Delineamento Metodológico' : studentTopic + ': Proposta de Pesquisa e Delineamento Metodológico'}".
+
+---
+
+#### 2. PROBLEMATIZAÇÃO E JUSTIFICATIVA DO PROJETO
+* **Análise do Critério:** A problematização contextualiza o cenário do tema e apresenta os motivos que justificam a relevância acadêmica, social e profissional da pesquisa.
+* **Inconformidades:**
+  1. Pergunta de Pesquisa Central: O problema de pesquisa deve ser formalizado de forma explícita e direta como uma questão interrogativa única ao final da contextualização.
+  2. Hipóteses / Pressupostos Norteadores: O projeto deve enunciar as hipóteses provisórias que serão testadas ou os pressupostos analíticos que direcionarão a investigação.
+* **Solução:**
+  * Inserir um parágrafo dedicado exclusivamente a enunciar a questão-problema central em formato de pergunta direta.
+  * Formular de 1 a 2 hipóteses preliminares ou pressupostos conceituais articulados com a justificativa.
+
+---
+
+#### 3. OBJETIVOS DO PROJETO (GERAL E ESPECÍFICOS)
+* **Análise do Critério:** Os objetivos delimitam o alcance da investigação futura proposta no projeto.
+* **Inconformidades:**
+  1. O objetivo geral deve responder diretamente à pergunta de pesquisa, utilizando verbos no infinitivo de caráter analítico (ex: analisar, investigar, avaliar, comparar).
+  2. Os objetivos específicos devem refletir etapas sequenciais e metodológicas da pesquisa futura (Diagnosticar -> Identificar -> Propor/Discutir).
+* **Solução:**
+  * Harmonizar o Objetivo Geral para que espelhe a pergunta-problema formulada.
+  * Estruturar exatamente de 3 a 4 Objetivos Específicos encadeados em ordem lógica de execução.
+
+---
+
+#### 4. FUNDAMENTAÇÃO TEÓRICA PRELIMINAR / MARCO CONCEITUAL
+* **Análise do Critério:** O projeto apresenta a base conceitual e o estado da arte necessários para embasar a proposta de investigação.
+##### A. Coerência Conceitual e Revisão da Literatura
+* **Inconformidades:**
+  1. Articulação dos Autores Seminais: É necessário equilibrar os conceitos clássicos da área com publicações científicas recentes (artigos indexados dos últimos 5 anos).
+  2. Evitar o uso exclusivo de manuais didáticos ou relatórios comerciais sem fundamentação científica rigorosa.
+* **Solução:**
+  * Dividir a fundamentação preliminar em 2 a 3 subtópicos conceituais estruturantes.
+  * Priorizar literatura acadêmica revisada por pares (SciELO, Periódicos Capes e Google Acadêmico).
+##### B. Atualização das Citações e Normas ABNT
+* **Inconformidades:**
+  1. Padronização de citações diretas e indiretas conforme a ABNT NBR 10520 e NBR 6023.
+* **Solução:**
+  * Ajustar a lista de referências ao final do projeto eliminando links quebrados ou sem metadados completos.
+
+---
+
+#### 5. PROCEDIMENTOS METODOLÓGICOS PROPOSTOS (DELINEAMENTO FUTURO)
+* **Análise do Critério:** A seção define como a pesquisa será executada nas etapas seguintes (TCC 1 e TCC 2).
+* **Inconformidades:**
+  1. Delineamento e Classificação: Especificar com clareza a natureza da pesquisa (básica/aplicada), a abordagem (quantitativa/qualitativa) e o procedimento técnico (estudo de caso, documental, levantamento de campo).
+  2. Universo, Campo e Amostragem: Indicar o local/campo de estudo, os sujeitos ou o corpus documental que será analisado.
+  3. Instrumentos de Coleta e Plano de Análise: Detalhar os instrumentos previstos (roteiro de entrevista, questionário ou matriz documental) e como os dados serão tratados.
+* **Solução:**
+  * Inserir uma Matriz Metodológica correlacionando cada Objetivo Específico à sua respectiva fonte de dados e técnica de análise.
+
+---
+
+#### 6. CRONOGRAMA DE EXECUÇÃO E VIABILIDADE (TCC 1 / TCC 2)
+* **Análise do Critério:** Planejamento temporal e viabilidade de execução do projeto de pesquisa nos semestres seguintes.
+* **Inconformidades:**
+  1. O cronograma deve prever detalhadamente os meses de: Revisão Teórica, Coleta de Dados no Campo, Qualificação (TCC 1), Análise dos Resultados e Defesa Final da Banca (TCC 2).
+* **Solução:**
+  * Inserir quadro de cronograma tabular no padrão da URCA dividindo as etapas mês a mês.
+
+---
+
+#### 7. CONFORMIDADE COM O PROJETO MODELO DA TURMA (URCA)
+* **Análise do Critério:** Aderência à estrutura formal estabelecida no Projeto Modelo oficial da turma de TPE (${sourceFileName || 'Projeto_Modelo.pdf'}).
+* **Inconformidades:**
+  1. Elementos Pré-textuais e Estrutura: Assegurar que a capa, folha de rosto, sumário e seções estejam no formato padrão de Projeto de Pesquisa (ABNT NBR 15287).
+* **Solução:**
+  * Utilizar os tópicos e formatações exatas do Projeto_Modelo.pdf disponibilizado pela coordenação.
+
+---
+
+#### 8. Parecer Geral do Projeto & Nota Preliminar da Etapa ${stageNum}
+* **Parecer do Agente:** **Projeto de Pesquisa Aprovado para Qualificação / Necessita de Ajustes Metodológicos para o TCC 1**
+* **Nota Indicada nesta Etapa:** **8.5 / 10** (Conceito A-)`;
+
+      strengths = '• Projeto de pesquisa estruturado conforme o Projeto Modelo da URCA com tema relevante e proposta bem delimitada.';
+      improvements = '• 1. Formalizar a pergunta de pesquisa e hipóteses;\n• 2. Detalhar a matriz metodológica de coleta futura;\n• 3. Inserir o cronograma de execução conforme o Projeto Modelo da URCA.';
+    } else {
+      // ARTIGO CIENTÍFICO (TCC 1 / TCC 2)
+      evaluationReport = `#### 1. TÍTULO
 * **Análise do Critério:** O título da pesquisa ("${studentTopic}") é claro e delimitado. Apresenta recorte temático e contexto empírico adequados.
 * **Inconformidades:**
   1. O título pode explicitar com maior clareza o enquadramento teórico ou metodológico principal.
@@ -645,7 +739,11 @@ export const apiClient = {
 
 ---
 
-#### 5. RESULTADOS E DISCUSSÕES${isTcc2 ? ' (TCC 2)' : ''}
+${isTcc1 ? `#### 5. RESULTADOS E DISCUSSÕES (não faz parte de TCC 1, apenas em TCC 2)
+
+---
+
+#### 6. CONSIDERAÇÕES FINAIS (não faz parte de TCC 1, apenas em TCC 2)` : `#### 5. RESULTADOS E DISCUSSÕES (TCC 2)
 * **Análise do Critério:** Apresentação estruturada dos dados coletados, relacionando as evidências com os objetivos propostos.
 * **Inconformidades:**
   1. Padronizar gráficos e tabelas conforme normas IBGE/ABNT (fontes, títulos e notas explicativas).
@@ -655,19 +753,23 @@ export const apiClient = {
 
 ---
 
-#### 6. CONSIDERAÇÕES FINAIS${isTcc2 ? ' (TCC 2)' : ''}
+#### 6. CONSIDERAÇÕES FINAIS (TCC 2)
 * **Análise do Critério:** Síntese dos principais achados da pesquisa e reflexão sobre o alcance dos objetivos.
 * **Inconformidades:**
   1. Responder de forma pontual à pergunta de pesquisa central.
   2. Detalhar recomendações aplicadas e sugestões para agenda de pesquisas futuras.
 * **Solução:**
-  * Dedicar parágrafos específicos para as contribuições teóricas, metodológicas e práticas do estudo.
+  * Dedicar parágrafos específicos para as contribuições teóricas, metodológicas e práticas do estudo.`}
 
 ---
 
-#### 7. Parecer Geral & Nota Preliminar
+#### 7. Parecer Geral & Nota Preliminar da Etapa ${stageNum}
 * **Parecer do Agente:** **Aprovado para Revisão / Recomendado Ajustes Estruturais**
 * **Nota Indicada:** **8.5 / 10** (Conceito A-)`;
+
+      strengths = '• Estrutura acadêmica sólida, boa contextualização e tema de alta relevância.';
+      improvements = '• 1. Refinar o protocolo metodológico;\n• 2. Atualizar o referencial teórico com autores contemporâneos;\n• 3. Padronizar citações conforme normas ABNT NBR 10520 e NBR 6023.';
+    }
 
     const newEval: ResearchEvaluation = {
       id: 'eval-' + Date.now(),

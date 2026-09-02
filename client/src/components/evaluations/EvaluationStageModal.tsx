@@ -122,10 +122,24 @@ export const EvaluationStageModal: React.FC<EvaluationStageModalProps> = ({
       setTransitionSourceFile(null);
       setError(null);
       setMode('STANDARD');
-      setStageTitle(`Etapa ${nextStageNumber} — ${nextStageNumber === 1 ? 'Versão Inicial' : `Revisão ${nextStageNumber - 1}`}`);
-      setCriteriaText(
-        `1. Adequação da estrutura acadêmica (Introdução, Objetivos, Metodologia e Fundamentação).\n2. Coerência entre o título da pesquisa ("${student.topic || 'Tema do Aluno'}") e o conteúdo redigido.\n3. Aplicação correta das normas da ABNT nas citações e referências.\n4. Clareza e rigor metodológico na proposta.`
+      setStageTitle(
+        isTpe
+          ? `Projeto de Pesquisa — ${nextStageNumber === 1 ? 'Versão Inicial' : `Revisão ${nextStageNumber - 1}`}`
+          : `Etapa ${nextStageNumber} — ${nextStageNumber === 1 ? 'Versão Inicial' : `Revisão ${nextStageNumber - 1}`}`
       );
+      if (isTpe) {
+        setCriteriaText(
+          `1. Adequação à estrutura formal do Projeto de Pesquisa (conforme Projeto Modelo da URCA: Problematização, Objetivos, Metodologia Proposta e Fundamentação).\n2. Coerência temática do Título e aderência da proposta ao tema ("${student.topic || 'Tema do Projeto'}").\n3. Clareza da Pergunta de Pesquisa e Definição de Hipóteses/Pressupostos.\n4. Procedimentos Metodológicos Propostos (Classificação, Unidade de Análise e Coleta de Dados).\n5. Cronograma de Execução e Viabilidade para TCC 1/TCC 2.\n6. Aplicação correta das normas da ABNT para Projetos (NBR 15287 e NBR 6023).`
+        );
+      } else if (isTcc1) {
+        setCriteriaText(
+          `1. Adequação da estrutura do Artigo de Qualificação de TCC 1 (Introdução, Metodologia e Referencial Teórico).\n2. Coerência entre o título da pesquisa ("${student.topic || 'Tema do Aluno'}") e o conteúdo redigido.\n3. Aplicação correta das normas da ABNT nas citações e referências.\n4. Clareza e rigor metodológico na proposta.`
+        );
+      } else {
+        setCriteriaText(
+          `1. Adequação da estrutura do Artigo Completo de TCC 2 (Introdução, Metodologia, Referencial Teórico, Resultados/Discussões e Considerações Finais).\n2. Coerência e consistência dos Resultados com os Objetivos propostos.\n3. Apresentação gráfica e tabular conforme normas IBGE/ABNT.\n4. Confrontação crítica com o referencial teórico e normas ABNT NBR 6023.`
+        );
+      }
       setSourceRefText('');
 
       // 1. Fetch Group Project Model ONLY for TPE

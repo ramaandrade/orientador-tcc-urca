@@ -229,6 +229,11 @@ export class AIEvaluatorService {
       return this.generateNextStageRoadmapEvaluation(input, topic, analysis);
     }
 
+    // Check if student is in TPE (Research Project mode)
+    if (input.studentGroup.toUpperCase().includes('TPE')) {
+      return this.generateTpeProjectEvaluation(input, topic, criteria, analysis, stageNum);
+    }
+
     // Build Stage-Specific Evolution Evaluation
     if (stageNum === 1) {
       return this.generateStage1Evaluation(input, topic, criteria, analysis);
@@ -273,6 +278,111 @@ export class AIEvaluatorService {
     doc: DocumentAnalysis
   ): EvaluationResult {
     return this.generateDeepAcademicEvaluation(input, topic, criteria, doc, input.stageNumber || 3);
+  }
+
+  /**
+   * Generates Specific Evaluation for PROJETO DE PESQUISA (TPE)
+   * Evaluates Project Structure: Título, Problematização/Justificativa, Objetivos, Fundamentação Teórica, Metodologia Proposta, Cronograma/Viabilidade e Conformidade com o Projeto Modelo
+   * (Does NOT evaluate Resultados or Considerações Finais, as the research has not been executed yet)
+   */
+  private generateTpeProjectEvaluation(
+    input: EvaluationInput,
+    topic: string,
+    criteria: string,
+    doc: DocumentAnalysis,
+    stageNum: number
+  ): EvaluationResult {
+    const textLower = doc.text.toLowerCase();
+    const sourceModelName = input.sourceFileName || 'Projeto_Modelo.pdf (Padrão da Turma TPE)';
+
+    const evaluationReport = `#### 1. TÍTULO E TEMA DO PROJETO DE PESQUISA
+* **Análise do Critério:** O título do projeto de pesquisa ("${topic}") apresenta delimitação temática adequada e indica o recorte do objeto de estudo pretendido para o desenvolvimento do TCC.
+* **Inconformidades:**
+  1. O título deve explicitar claramente o enfoque teórico ou empírico que norteará a coleta futura de dados, evitando termos excessivamente amplos.
+* **Solução:**
+  * Refinar o título do projeto para delimitar com precisão o problema de investigação.
+  * Sugestão de redação: "${topic.includes(':') ? topic.split(':')[0] + ': Proposta de Pesquisa e Delineamento Metodológico' : topic + ': Proposta de Pesquisa e Delineamento Metodológico'}".
+
+---
+
+#### 2. PROBLEMATIZAÇÃO E JUSTIFICATIVA DO PROJETO
+* **Análise do Critério:** A problematização contextualiza o cenário do tema e apresenta os motivos que justificam a relevância acadêmica, social e profissional da pesquisa.
+* **Inconformidades:**
+  1. Pergunta de Pesquisa Central: O problema de pesquisa deve ser formalizado de forma explícita e direta como uma questão interrogativa única ao final da contextualização.
+  2. Hipóteses / Pressupostos Norteadores: O projeto deve enunciar as hipóteses provisórias que serão testadas ou os pressupostos analíticos que direcionarão a investigação.
+* **Solução:**
+  * Inserir um parágrafo dedicado exclusivamente a enunciar a questão-problema central em formato de pergunta direta.
+  * Formular de 1 a 2 hipóteses preliminares ou pressupostos conceituais articulados com a justificativa.
+
+---
+
+#### 3. OBJETIVOS DO PROJETO (GERAL E ESPECÍFICOS)
+* **Análise do Critério:** Os objetivos delimitam o alcance da investigação futura proposta no projeto.
+* **Inconformidades:**
+  1. O objetivo geral deve responder diretamente à pergunta de pesquisa, utilizando verbos no infinitivo de caráter analítico (ex: analisar, investigar, avaliar, comparar).
+  2. Os objetivos específicos devem refletir etapas sequenciais e metodológicas da pesquisa futura (Diagnosticar -> Identificar -> Propor/Discutir).
+* **Solução:**
+  * Harmonizar o Objetivo Geral para que espelhe a pergunta-problema formulada.
+  * Estruturar exatamente de 3 a 4 Objetivos Específicos encadeados em ordem lógica de execução.
+
+---
+
+#### 4. FUNDAMENTAÇÃO TEÓRICA PRELIMINAR / MARCO CONCEITUAL
+* **Análise do Critério:** O projeto apresenta a base conceitual e o estado da arte necessários para embasar a proposta de investigação.
+##### A. Coerência Conceitual e Revisão da Literatura
+* **Inconformidades:**
+  1. Articulação dos Autores Seminais: É necessário equilibrar os conceitos clássicos da área com publicações científicas recentes (artigos indexados dos últimos 5 anos).
+  2. Evitar o uso exclusivo de manuais didáticos ou relatórios comerciais sem fundamentação científica rigorosa.
+* **Solução:**
+  * Dividir a fundamentação preliminar em 2 a 3 subtópicos conceituais estruturantes.
+  * Priorizar literatura acadêmica revisada por pares (SciELO, Periódicos Capes e Google Acadêmico).
+##### B. Atualização das Citações e Normas ABNT
+* **Inconformidades:**
+  1. Padronização de citações diretas e indiretas conforme a ABNT NBR 10520 e NBR 6023.
+* **Solução:**
+  * Ajustar a lista de referências ao final do projeto eliminando links quebrados ou sem metadados completos.
+
+---
+
+#### 5. PROCEDIMENTOS METODOLÓGICOS PROPOSTOS (DELINEAMENTO FUTURO)
+* **Análise do Critério:** A seção define como a pesquisa será executada nas etapas seguintes (TCC 1 e TCC 2).
+* **Inconformidades:**
+  1. Delineamento e Classificação: Especificar com clareza a natureza da pesquisa (básica/aplicada), a abordagem (quantitativa/qualitativa) e o procedimento técnico (estudo de caso, documental, levantamento de campo).
+  2. Universo, Campo e Amostragem: Indicar o local/campo de estudo, os sujeitos ou o corpus documental que será analisado.
+  3. Instrumentos de Coleta e Plano de Análise: Detalhar os instrumentos previstos (roteiro de entrevista, questionário ou matriz documental) e como os dados serão tratados.
+* **Solução:**
+  * Inserir uma Matriz Metodológica correlacionando cada Objetivo Específico à sua respectiva fonte de dados e técnica de análise.
+
+---
+
+#### 6. CRONOGRAMA DE EXECUÇÃO E VIABILIDADE (TCC 1 / TCC 2)
+* **Análise do Critério:** Planejamento temporal e viabilidade de execução do projeto de pesquisa nos semestres seguintes.
+* **Inconformidades:**
+  1. O cronograma deve prever detalhadamente os meses de: Revisão Teórica, Coleta de Dados no Campo, Qualificação (TCC 1), Análise dos Resultados e Defesa Final da Banca (TCC 2).
+* **Solução:**
+  * Inserir quadro de cronograma tabular no padrão da URCA dividindo as etapas mês a mês.
+
+---
+
+#### 7. CONFORMIDADE COM O PROJETO MODELO DA TURMA (URCA)
+* **Análise do Critério:** Aderência à estrutura formal estabelecida no Projeto Modelo oficial da turma de TPE (${sourceModelName}).
+* **Inconformidades:**
+  1. Elementos Pré-textuais e Estrutura: Assegurar que a capa, folha de rosto, sumário e seções estejam no formato padrão de Projeto de Pesquisa (ABNT NBR 15287).
+* **Solução:**
+  * Utilizar os tópicos e formatações exatas do Projeto_Modelo.pdf disponibilizado pela coordenação.
+
+---
+
+#### 8. Parecer Geral do Projeto & Nota Preliminar da Etapa ${stageNum}
+* **Parecer do Agente:** **Projeto de Pesquisa Aprovado para Qualificação / Necessita de Ajustes Metodológicos para o TCC 1**
+* **Nota Indicada nesta Etapa:** **8.5 / 10** (Conceito A-)`;
+
+    return {
+      evaluationReport,
+      strengths: `• Projeto de pesquisa bem estruturado com tema relevante e proposta de investigação bem delimitada.`,
+      improvements: `• 1. Formalizar a pergunta de pesquisa e hipóteses;\n• 2. Detalhar a matriz metodológica de coleta futura;\n• 3. Inserir o cronograma de execução conforme o Projeto Modelo da URCA.`,
+      suggestedGrade: '8.5 / 10',
+    };
   }
 
   /**
