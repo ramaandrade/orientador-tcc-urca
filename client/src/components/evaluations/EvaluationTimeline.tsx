@@ -15,7 +15,8 @@ import {
   Sparkles,
   ExternalLink,
   FileDown,
-  Printer
+  Printer,
+  RefreshCw
 } from 'lucide-react';
 import { apiClient } from '../../services/api';
 
@@ -38,9 +39,44 @@ export const EvaluationTimeline: React.FC<EvaluationTimelineProps> = ({
   const [sendingWhatsappId, setSendingWhatsappId] = useState<string | null>(null);
   const [whatsappSuccessId, setWhatsappSuccessId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [reevaluatingId, setReevaluatingId] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
+  };
+
+  const handleReevaluateStage = async (evalItem: ResearchEvaluation) => {
+    if (!window.confirm(`Deseja reavaliar a "${evalItem.stageTitle}" com a nova matriz acadêmica atualizada?`)) return;
+    setReevaluatingId(evalItem.id);
+    try {
+      await apiClient.deleteEvaluationStage(evalItem.id);
+      const isTpe = student.group.toUpperCase().includes('TPE');
+      const isTcc1 = student.group.toUpperCase().includes('TCC 1') || student.group.toUpperCase().includes('TCC1');
+
+      const formData = new FormData();
+      formData.append('studentId', student.id);
+      formData.append('stageTitle', evalItem.stageTitle);
+      formData.append(
+        'criteriaText',
+        isTpe
+          ? `1. Adequação à estrutura formal do Projeto de Pesquisa (conforme Projeto Modelo da URCA: Problematização, Objetivos, Metodologia Proposta e Fundamentação).\n2. Coerência temática do Título e aderência da proposta ao tema ("${student.topic || 'Tema do Projeto'}").\n3. Clareza da Pergunta de Pesquisa e Definição de Hipóteses/Pressupostos.\n4. Procedimentos Metodológicos Propostos (Classificação, Unidade de Análise e Coleta de Dados).\n5. Cronograma de Execução e Viabilidade para TCC 1/TCC 2.\n6. Aplicação correta das normas da ABNT para Projetos (NBR 15287 e NBR 6023).`
+          : isTcc1
+          ? `1. Adequação da estrutura do Artigo de Qualificação de TCC 1 (Introdução, Metodologia e Referencial Teórico).\n2. Coerência entre o título da pesquisa ("${student.topic || 'Tema do Aluno'}") e o conteúdo redigido.\n3. Aplicação correta das normas da ABNT nas citações e referências.\n4. Clareza e rigor metodológico na proposta.`
+          : `1. Adequação da estrutura do Artigo Completo de TCC 2 (Introdução, Metodologia, Referencial Teórico, Resultados/Discussões e Considerações Finais).\n2. Coerência e consistência dos Resultados com os Objetivos propostos.\n3. Apresentação gráfica e tabular conforme normas IBGE/ABNT.\n4. Confrontação crítica com o referencial teórico e normas ABNT NBR 6023.`
+      );
+      formData.append('useGroupModel', 'true');
+      const virtualFile = new File(['Pesquisa Acadêmica'], evalItem.fileName || 'Projeto_de_Pesquisa.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+      formData.append('file', virtualFile);
+
+      await apiClient.createEvaluationStage(formData);
+      onRefresh();
+    } catch (err: any) {
+      alert(err.response?.data?.error || err.message || 'Erro ao reavaliar etapa');
+    } finally {
+      setReevaluatingId(null);
+    }
   };
 
   const handleSendWhatsApp = async (evalItem: ResearchEvaluation) => {
@@ -414,6 +450,18 @@ export const EvaluationTimeline: React.FC<EvaluationTimelineProps> = ({
                       </div>
 
                       <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => handleReevaluateStage(item)}
+                          disabled={Boolean(reevaluatingId)}
+                          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-indigo-950/80 hover:bg-indigo-900 text-indigo-200 text-[11px] font-bold border border-indigo-700 shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                          title="Reavalia esta etapa aplicando a matriz acadêmica mais recente"
+                        >
+                          <RefreshCw className={`w-3.5 h-3.5 text-indigo-400 ${reevaluatingId === item.id ? 'animate-spin' : ''}`} />
+                          <span>
+                            {reevaluatingId === item.id ? 'Reavaliando...' : 'Reavaliar com IA'}
+                          </span>
+                        </button>
+
                         <button
                           onClick={() => handleSendWhatsApp(item)}
                           disabled={Boolean(sendingWhatsappId)}
