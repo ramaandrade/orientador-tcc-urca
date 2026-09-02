@@ -716,49 +716,61 @@ export const apiClient = {
       strengths = '• Projeto de pesquisa estruturado conforme o Projeto Modelo da URCA com tema relevante e proposta bem delimitada.';
       improvements = '• 1. Formalizar a pergunta de pesquisa e hipóteses;\n• 2. Detalhar a matriz metodológica de coleta futura;\n• 3. Inserir o cronograma de execução conforme o Projeto Modelo da URCA.';
     } else {
-      // ARTIGO CIENTÍFICO (TCC 1 / TCC 2)
+      // ARTIGO CIENTÍFICO (TCC 1 / TCC 2 — Modelo Correções 2)
       evaluationReport = `#### 1. TÍTULO
-* **Análise do Critério:** O título da pesquisa ("${studentTopic}") é claro e delimitado. Apresenta recorte temático e contexto empírico adequados.
+* **Análise do Critério:** O título é claro, delimita o tema ("${studentTopic}"), o recorte espacial (Brasil / contexto empírico) e as lentes teóricas principais.
 * **Inconformidades:**
-  1. O título pode explicitar com maior clareza o enquadramento teórico ou metodológico principal.
+  1. O título omite a inclusão expressa de abordagens teóricas fundamentais utilizadas no resumo, introdução e corpo do texto com o mesmo peso conceitual dado às teorias centrais.
 * **Solução:**
-  * Refinar o título mantendo a concisão e destacando o objeto de estudo.
+  * Ajustar o título para refletir com exatidão o tripé teórico do trabalho ou torná-lo mais sintético.
+  * Sugestão de redação: "${studentTopic.includes(':') ? studentTopic.split(':')[0] + ': Uma Análise Institucional e Empírica' : studentTopic + ': Uma Análise Institucional e de Justiça Distributiva'}".
 
 ---
 
 #### 2. INTRODUÇÃO
-* **Análise do Critério:** A introdução contextualiza o problema de pesquisa com base em dados atuais, delineando o objetivo geral e as justificativas acadêmica e prática.
+* **Análise do Critério:** A contextualização e a justificativa utilizam indicadores atualizados. A estrutura do trabalho, o problema e os objetivos estão formulados de forma encadeada.
 * **Inconformidades:**
-  1. O problema de pesquisa deve ser destacado como uma pergunta interrogativa direta e clara.
-  2. Ajustar notas explicativas para manter a fluidez do texto científico.
+  1. Incongruência de Referencial na Introdução: Notas de rodapé e citações detalham conceitos basilares de forma excessivamente didática/manualesca para um trabalho de nível superior em Economia, sem agregar densidade analítica.
+  2. Desalinhamento Temporal / Anacronismo e Incoerência Citacional: A Introdução cita dados recentes da PNAD Contínua referentes aos anos de 2024, 2025 e 2026 (ex: IBGE, 2025; IBGE, 2026), porém, na seção de Metodologia (seção 2), o texto afirma que a seleção das fontes priorizou estudos publicados "principalmente entre 2015 e 2025". Exige-se rigor na verificação e consolidação cronológica.
+  3. Problema e Objetivos: O problema de pesquisa e o objetivo geral silenciam categorias teóricas mobilizadas na fundamentação (ex: Abordagem das Capacidades de Sen), gerando assimetria com a fundamentação.
 * **Solução:**
-  * Formular a questão central de forma direta no fechamento da justificativa.
-  * Harmonizar o horizonte temporal da pesquisa entre a introdução e o delineamento metodológico.
+  * Remover ou condensar Notas de Rodapé enciclopédicas: Substituir o texto manualesco por uma breve menção fluida diretamente no corpo do texto.
+  * Harmonizar as datas da Metodologia com a Introdução: Corrigir a redação da metodologia para indicar com clareza a amplitude temporal exata das séries de dados analisadas.
+  * Reformular o Problema e Objetivo Geral: Incluir explicitamente as categorias teóricas e empíricas estruturantes para que fiquem 100% coerentes com o referencial e os resultados.
 
 ---
 
 #### 3. METODOLOGIA
-* **Análise do Critério:** A metodologia classifica a pesquisa de forma aplicada, descritiva e com abordagem empírica coerente.
+* **Análise do Critério:** A seção define a pesquisa como aplicada, qualitativa/quantitativa, exploratória e descritiva, utilizando revisão bibliográfica e análise documental.
 * **Inconformidades:**
-  1. Detalhar o protocolo de coleta, descritores de busca e critérios de amostragem.
-  2. Apresentar a grade de categorização ou matriz analítica de confronto dos dados.
+  1. Falta de Especificação do Corpus Documental e Amostragem: O texto cita amplamente órgãos (IBGE, IPEA, ILO, OECD, Banco Mundial), mas não estabelece os critérios exatos de busca, palavras-chave utilizadas, nem os filtros sistemáticos que levaram à seleção dos relatórios específicos.
+  2. Ausência de Unidade de Análise Clara: Não fica claro se a unidade de análise são os relatórios institucionais ou os indicadores secundários extraídos desses relatórios.
+  3. Aplicação Superficial da Análise de Conteúdo (Bardin, 2011): O autor cita Bardin, mas não apresenta como realizou a grade de codificação das unidades de registro e contexto. As categorias analíticas listadas no texto são genéricas.
 * **Solução:**
-  * Incluir quadro síntese das variáveis investigadas e respectivas fontes documentais/estatísticas.
+  * Inserir Subseção de Protocolo de Busca: Detalhar os descritores de busca empregados (ex: "automação", "desigualdade de renda", "PNAD Contínua"), os bancos de dados consultados e o horizonte temporal exato.
+  * Sistematizar a Análise Documental: Incluir um quadro sintético relacionando as 4 dimensões analíticas propostas no texto com as fontes documentais correspondentes, demonstrando a operacionalização da técnica de Bardin (2011).
 
 ---
 
 #### 4. REFERENCIAL TEÓRICO
-* **Análise do Critério:** Apresenta fundamentação teórica estruturada em tópicos conceituais relevantes para a área.
+* **Análise do Critério:** O referencial é dividido em subseções conceituais articuladas. Há um esforço conceitual claro em conectar teorias econômicas (Acemoglu & Restrepo, NEI) com filosofia política/social (Rawls, Sen).
 ##### A. Coerência entre os Pontos Destacados
 * **Inconformidades:**
-  1. Articular mais intensamente os autores seminais clássicos com publicações contemporâneas revisadas por pares.
+  1. Fragmentação de Conceitos na Seção Teórica: O texto tenta abraçar simultaneamente múltiplas correntes teóricas. Essa saturação em um único tópico mistura teorias filosófico-normativas profundas com relatórios de consultorias privadas e indicadores empíricos, enfraquecendo o debate conceitual.
+  2. Tratamento Reducionista de Douglass North e da NEI: A citação de North (1990) e autores de base é genérica. Conceitos-chave da NEI essenciais para o tema — como custos de transação, direitos de propriedade, dependência de trajetória (path dependence) e instituições informais — não são operacionalizados para explicar por que o Brasil falha em absorver tecnologias de forma inclusiva.
 * **Solução:**
-  * Cruzar os conceitos teóricos diretamente com o contexto da pesquisa.
-##### B. Atualização do Tema e ABNT
+  * Reorganizar o Referencial Teórico por Eixos Temáticos Limpos:
+    * Eixo 1 (Normativo/Filosófico): Rawls (Princípio da Diferença) e Sen (Capacidades/Funcionamentos).
+    * Eixo 2 (Econômico/Institucional): Nova Economia Institucional (North, Pondé) e Teoria do Deslocamento/Produtividade (Acemoglu & Restrepo, Acemoglu & Johnson).
+  * Aprofundar a NEI: Explicar explicitamente como a path dependence (dependência da trajetória de desigualdade brasileira) funciona como uma barreira institucional para a capacitação tecnológica.
+##### B. Atualização do Tema e dos Autores
 * **Inconformidades:**
-  1. Revisar citações diretas longas e referências conforme a ABNT NBR 10520 e NBR 6023:2018.
+  1. Uso Indevido de Consultoria de Mercado como Referencial Teórico Principal: O trabalho utiliza relatórios da McKinsey Global Institute (2017; 2023) no mesmo patamar de obras científicas e acadêmicas. Relatórios corporativos possuem viés comercial e metodologias fechadas, devendo ser usados apenas com ressalva contextual, e não como esteio teórico.
+  2. Lacunas na Literatura Crítica sobre o Tema: Falta dialogar com autores contemporâneos que tratam da economia digital sob a ótica da precarização e do viés algorítmico no contexto periférico (ex: Nick Srnicek - Platform Capitalism; Shoshana Zuboff - A Era do Capitalismo de Vigilância).
+  3. Erros na Lista de Referências: A citação de artigos apresenta URL bruta proveniente do buscador Bing com parâmetros de rastreamento no link (bing.com/ck/a?...), o que é uma incorreção grave nas normas ABNT NBR 6023. Links de acesso truncados.
 * **Solução:**
-  * Padronizar as referências bibliográficas eliminando links diretos de motores de busca.
+  * Substituir/Reenquadrar a McKinsey: Rebaixar os dados da McKinsey para meros exemplos de mercado e priorizar literatura acadêmica revisada por pares (como Autor, Levy & Murnane ou Frey & Osborne).
+  * Limpar e Corrigir as Referências (ABNT): Sanitizar imediatamente as citações, removendo a URL do Bing e inserindo o link oficial do periódico ou DOI.
 
 ---
 
@@ -787,11 +799,11 @@ ${isTcc1 ? `#### 5. RESULTADOS E DISCUSSÕES (não faz parte de TCC 1, apenas em
 ---
 
 #### 7. Parecer Geral & Nota Preliminar da Etapa ${stageNum}
-* **Parecer do Agente:** **Aprovado para Revisão / Recomendado Ajustes Estruturais**
+* **Parecer do Agente:** **Aprovado para Revisão / Recomendado Ajustes Estruturais (Modelo Correções 2)**
 * **Nota Indicada:** **8.5 / 10** (Conceito A-)`;
 
-      strengths = '• Estrutura acadêmica sólida, boa contextualização e tema de alta relevância.';
-      improvements = '• 1. Refinar o protocolo metodológico;\n• 2. Atualizar o referencial teórico com autores contemporâneos;\n• 3. Padronizar citações conforme normas ABNT NBR 10520 e NBR 6023.';
+      strengths = '• Estrutura acadêmica sólida, boa articulação conceitual e tema de alta relevância.';
+      improvements = '• 1. Refinar o protocolo metodológico de busca e amostragem (Bardin, 2011);\n• 2. Reorganizar o referencial teórico em eixos conceituais limpos e aprofundar a NEI;\n• 3. Sanitizar as referências ABNT NBR 6023 removendo links de motores de busca (Bing/Google).';
     }
 
     const newEval: ResearchEvaluation = {

@@ -77,6 +77,13 @@ export const EvaluationStageModal: React.FC<EvaluationStageModalProps> = ({
   // Pre-configured official source libraries
   const librarySourcesTCC1 = [
     { 
+      title: 'Correções 2 (Diretrizes Deep Model URCA)', 
+      isHighlighted: true,
+      fileUrl: '/docs/Modelo_Correcoes_2_URCA.txt',
+      fileName: 'Modelo_Correcoes_2_URCA.txt',
+      text: 'Modelo de Correções 2 (Diretrizes e Diagnóstico Aprofundado URCA):\n• 1. Título: Delimitação temática e alinhamento com lentes teóricas centrais (evitar omitir teorias seminais).\n• 2. Introdução: Eliminação de notas de rodapé manualescas/enciclopédicas, harmonização temporal das datas com a metodologia e inclusão explícita das teorias no problema/objetivos.\n• 3. Metodologia: Protocolo exato de busca e descritores, definição da unidade de análise e operacionalização rigorosa da Análise de Conteúdo (Bardin, 2011) com quadro de dimensões.\n• 4. Referencial Teórico:\n  A. Coerência: Reorganização por eixos temáticos limpos (Normativo/Filosófico vs Econômico/Institucional) e aprofundamento de conceitos-chave (path dependence, custos de transação).\n  B. Atualização & ABNT: Reenquadrar relatórios de mercado (McKinsey) como exemplos e priorizar literatura revisada por pares; incluir literatura crítica contemporânea; sanitizar referências removendo links de buscadores (Bing/Google) conforme ABNT NBR 6023.\n• 5/6. Regra Estrutural: Resultados e Considerações Finais apenas em TCC 2.' 
+    },
+    { 
       title: 'Roteiro de Desenvolvimento do TCC 1', 
       isHighlighted: true,
       fileUrl: '/docs/Roteiro_Desenvolvimento_TCC1.txt',
@@ -99,6 +106,13 @@ export const EvaluationStageModal: React.FC<EvaluationStageModalProps> = ({
   ];
 
   const librarySourcesTCC2 = [
+    { 
+      title: 'Correções 2 (Diretrizes Deep Model URCA)', 
+      isHighlighted: true,
+      fileUrl: '/docs/Modelo_Correcoes_2_URCA.txt',
+      fileName: 'Modelo_Correcoes_2_URCA.txt',
+      text: 'Modelo de Correções 2 (Diretrizes e Diagnóstico Aprofundado URCA):\n• 1. Título: Delimitação temática e alinhamento com lentes teóricas centrais (evitar omitir teorias seminais).\n• 2. Introdução: Eliminação de notas de rodapé manualescas/enciclopédicas, harmonização temporal das datas com a metodologia e inclusão explícita das teorias no problema/objetivos.\n• 3. Metodologia: Protocolo exato de busca e descritores, definição da unidade de análise e operacionalização rigorosa da Análise de Conteúdo (Bardin, 2011) com quadro de dimensões.\n• 4. Referencial Teórico:\n  A. Coerência: Reorganização por eixos temáticos limpos (Normativo/Filosófico vs Econômico/Institucional) e aprofundamento de conceitos-chave (path dependence, custos de transação).\n  B. Atualização & ABNT: Reenquadrar relatórios de mercado (McKinsey) como exemplos e priorizar literatura revisada por pares; incluir literatura crítica contemporânea; sanitizar referências removendo links de buscadores (Bing/Google) conforme ABNT NBR 6023.\n• 5. Resultados e Discussões: Apresentação tabular/gráfica IBGE/ABNT e confrontação teórica.\n• 6. Considerações Finais: Resposta ao problema, contribuições e recomendações práticas.' 
+    },
     { 
       title: 'Critérios TCC 2 (URCA)', 
       isHighlighted: true,
@@ -754,26 +768,26 @@ export const EvaluationStageModal: React.FC<EvaluationStageModalProps> = ({
                     </a>
                   </div>
 
-                  {/* + Critérios 2 Button & Link */}
-                  <div className="inline-flex items-center rounded-lg bg-indigo-950/90 border border-indigo-700 shadow-sm overflow-hidden ring-1 ring-indigo-500/20">
+                  {/* + Correções 2 Button & Link */}
+                  <div className="inline-flex items-center rounded-lg bg-purple-950/90 border border-purple-600 shadow-sm overflow-hidden ring-1 ring-purple-500/30">
                     <button
                       type="button"
                       onClick={() => addCriteriaSnippet(
-                        `Critérios Verificados na Pesquisa TCC 2 (URCA):\n• Título definitivo delimitado.\n• Introdução consolidada articulando problema e objetivos.\n• Metodologia executada (Delineamento, Unidade de análise, Amostragem, Coleta e Análise).\n• Referencial Teórico com conceitos e Estado da Arte.\n• Resultados e Discussões (TCC 2): Apresentação clara de tabelas/gráficos IBGE/ABNT, análise crítica, confrontação teórica e validação expressa das hipóteses.\n• Considerações Finais (TCC 2): Resposta ao problema, contribuições, recomendações práticas a gestores e novas investigações.`
+                        `Modelo de Correções 2 (Diretrizes e Diagnóstico Aprofundado URCA):\n• 1. TÍTULO: Delimitação temática e alinhamento com lentes teóricas centrais (evitar omitir teorias seminais).\n• 2. INTRODUÇÃO: Eliminação de notas de rodapé manualescas/enciclopédicas, harmonização temporal das datas com a metodologia e alinhamento do problema/objetivos com o referencial.\n• 3. METODOLOGIA: Protocolo exato de busca e descritores, definição da unidade de análise e operacionalização rigorosa da Análise de Conteúdo (Bardin, 2011) com quadro de dimensões.\n• 4. REFERENCIAL TEÓRICO:\n  A. Coerência: Reorganização por eixos temáticos limpos (Normativo/Filosófico vs Econômico/Institucional) e aprofundamento de conceitos-chave (path dependence, custos de transação).\n  B. Atualização & ABNT: Reenquadrar relatórios de mercado (McKinsey) como exemplos e priorizar literatura revisada por pares; incluir literatura crítica contemporânea; sanitizar referências removendo links de buscadores (Bing/Google) conforme ABNT NBR 6023.\n• 5/6. Regra Estrutural: Resultados e Considerações Finais apenas em TCC 2.`
                       )}
-                      className="px-2.5 py-1 text-indigo-200 hover:text-white hover:bg-indigo-800 text-[11px] font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
-                      title="Acrescentar os Critérios Oficiais de TCC 2 aos parâmetros do agente"
+                      className="px-2.5 py-1 text-purple-200 hover:text-white hover:bg-purple-800 text-[11px] font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                      title="Acrescentar o Modelo de Correções 2 aos parâmetros do agente"
                     >
-                      <FileText className="w-3.5 h-3.5 text-indigo-400" />
-                      <span>+ Critérios 2</span>
+                      <FileText className="w-3.5 h-3.5 text-purple-400" />
+                      <span>+ Correções 2</span>
                     </button>
                     <a
-                      href="/docs/Criterios_Pesquisa_TCC2_URCA.txt"
+                      href="/docs/Modelo_Correcoes_2_URCA.txt"
                       target="_blank"
                       rel="noreferrer"
-                      download="Criterios_Pesquisa_TCC2_URCA.txt"
-                      className="px-2 py-1 text-indigo-400 hover:text-white hover:bg-indigo-800 border-l border-indigo-700/80 transition-colors flex items-center"
-                      title="Baixar / Visualizar Arquivo de Critérios TCC 2"
+                      download="Modelo_Correcoes_2_URCA.txt"
+                      className="px-2 py-1 text-purple-400 hover:text-white hover:bg-purple-800 border-l border-purple-700/80 transition-colors flex items-center"
+                      title="Baixar / Visualizar Arquivo Modelo de Correções 2"
                     >
                       <Download className="w-3 h-3" />
                     </a>

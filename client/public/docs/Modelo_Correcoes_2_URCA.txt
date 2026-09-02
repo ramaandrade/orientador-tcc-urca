@@ -1,0 +1,51 @@
+﻿1. TÍTULO
+• Análise do Critério: O título é claro, delimita o tema, o recorte espacial e as lentes teóricas principais.
+• Inconformidades:
+1. O título omite a inclusão expressa de abordagens teóricas fundamentais utilizadas no resumo, introdução e corpo do texto com o mesmo peso conceitual dado às teorias centrais.
+• Solução:
+o Ajustar o título para refletir com exatidão o tripé teórico do trabalho ou torná-lo mais sintético.
+o Sugestão de redação: "[Tema da Pesquisa]: Uma Análise Institucional e Empírica".
+
+2. INTRODUÇÃO
+• Análise do Critério: A contextualização e a justificativa utilizam indicadores atualizados. A estrutura do trabalho, o problema e os objetivos estão formulados de forma encadeada.
+• Inconformidades:
+1. Incongruência de Referencial na Introdução: Notas de rodapé e citações detalham conceitos basilares de forma excessivamente didática/manualesca para um trabalho de nível superior, sem agregar densidade analítica.
+2. Desalinhamento Temporal / Anacronismo e Incoerência Citacional: A Introdução cita dados recentes de fontes primárias, porém a seção de Metodologia estabelece recorte temporal divergente. Exige-se rigor na verificação e consolidação cronológica das fontes.
+3. Problema e Objetivos: O problema de pesquisa e o objetivo geral silenciam categorias teóricas mobilizadas na fundamentação, gerando assimetria entre a introdução e o referencial.
+• Solução:
+o Remover ou condensar Notas de Rodapé enciclopédicas: Substituir o texto enciclopédico por uma breve menção fluida no corpo do texto.
+o Harmonizar as datas da Metodologia com a Introdução: Corrigir a redação da metodologia para indicar a amplitude temporal exata das séries de dados analisadas.
+o Reformular o Problema e Objetivo Geral: Incluir explicitamente as categorias teóricas e empíricas estruturantes para que fiquem 100% coerentes com o referencial e os resultados.
+
+3. METODOLOGIA
+• Análise do Critério: A seção define a pesquisa como aplicada, qualitativa/quantitativa, exploratória e descritiva, utilizando levantamento documental e bibliográfico.
+• Inconformidades:
+1. Falta de Especificação do Corpus Documental e Amostragem: O texto cita órgãos e bases de dados amplas, mas não estabelece os critérios exatos de busca, palavras-chave utilizadas, nem os filtros sistemáticos que levaram à seleção dos relatórios específicos.
+2. Ausência de Unidade de Análise Clara: Não fica claro se a unidade de análise são os relatórios institucionais ou os indicadores secundários extraídos desses relatórios.
+3. Aplicação Superficial da Análise de Conteúdo (Bardin, 2011): Cita Bardin, mas não apresenta como realizou a grade de codificação das unidades de registro e contexto. As categorias analíticas são genéricas.
+• Solução:
+o Inserir Subseção de Protocolo de Busca: Detalhar os descritores de busca empregados, os bancos de dados consultados e o horizonte temporal exato.
+o Sistematizar a Análise Documental: Incluir um quadro sintético relacionando as dimensões analíticas propostas com as fontes documentais correspondentes, demonstrando a operacionalização da técnica de Bardin (2011).
+
+4. REFERENCIAL TEÓRICO
+• Análise do Critério: O referencial é estruturado em subseções conceituais articuladas. Há um esforço conceitual em conectar teorias de base com debates contemporâneos.
+A. Coerência entre os Pontos Destacados
+• Inconformidades:
+1. Fragmentação de Conceitos: Tópicos que tentam abraçar simultaneamente múltiplas correntes teóricas misturam teorias normativas profundas com relatórios de consultorias privadas e indicadores empíricos, enfraquecendo o debate conceitual.
+2. Tratamento Reducionista de Autores Seminais: Conceitos-chave essenciais para o tema — como custos de transação, direitos de propriedade, dependência de trajetória (path dependence) e instituições informais — são citados genericamente sem serem operacionalizados no contexto da pesquisa.
+• Solução:
+o Reorganizar o Referencial Teórico por Eixos Temáticos Limpos:
+▪ Eixo 1 (Normativo/Filosófico): Teorias conceituais de base.
+▪ Eixo 2 (Econômico/Institucional): Modelos analíticos e teorias de impacto.
+o Aprofundar os Conceitos Seminais: Explicar explicitamente como os mecanismos teóricos (ex: path dependence) funcionam como barreiras ou catalisadores no contexto investigado.
+B. Atualização do Tema e dos Autores
+• Inconformidades:
+1. Uso Indevido de Consultoria de Mercado como Referencial Teórico Principal: Utilização de relatórios corporativos com viés comercial no mesmo patamar de literatura científica e acadêmica revisada por pares.
+2. Lacunas na Literatura Crítica Contemporânea: Falta dialogar com autores recentes que tratam do tema sob óticas críticas e de fronteira do conhecimento.
+3. Erros na Lista de Referências: Presença de URLs brutas de buscadores (Bing/Google com parâmetros de rastreamento) e links truncados em desacordo com a ABNT NBR 6023.
+• Solução:
+o Substituir/Reenquadrar Consultorias de Mercado: Rebaixar dados de relatórios privados para meros exemplos empíricos e priorizar literatura científica revisada por pares.
+o Limpar e Corrigir as Referências (ABNT): Sanitizar citações e referências removendo links de buscadores e inserindo DOI e links oficiais de periódicos.
+
+5. RESULTADOS E DISCUSSÕES (TCC 2)
+6. CONSIDERAÇÕES FINAIS (TCC 2)
