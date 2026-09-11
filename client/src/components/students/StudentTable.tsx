@@ -11,6 +11,7 @@ import {
   Award,
   Calendar,
   BookOpen,
+  Send,
 } from 'lucide-react';
 
 interface StudentTableProps {
@@ -228,7 +229,27 @@ export const StudentTable: React.FC<StudentTableProps> = ({
                       )}
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end space-x-1">
+                      <div className="flex items-center justify-end space-x-1.5">
+                        {(() => {
+                          const cleanPhone = (student.phone || '').replace(/\D/g, '');
+                          const fullPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+                          const defaultMsg = `Olá ${student.name.split(' ')[0]}! Passando para lembrar que o trabalho de orientação de ${student.group} deve ser desenvolvido com AGILIDADE E QUALIDADE! Falando nisso, como vai a sua pesquisa sobre "${student.topic || 'sua pesquisa'}"?`;
+                          const waUrl = `https://api.whatsapp.com/send?phone=${fullPhone}&text=${encodeURIComponent(defaultMsg)}`;
+
+                          return (
+                            <a
+                              href={waUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-700/60 text-[11px] font-bold transition-all flex items-center space-x-1 shadow cursor-pointer"
+                              title={`Enviar mensagem no WhatsApp para ${student.name}`}
+                            >
+                              <Send className="w-3 h-3" />
+                              <span>WhatsApp</span>
+                            </a>
+                          );
+                        })()}
+
                         <button
                           onClick={() => onEditStudent(student)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
