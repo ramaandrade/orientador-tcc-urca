@@ -199,13 +199,39 @@ export const getCampaignStatus = async (req: Request, res: Response): Promise<vo
   try {
     const { id } = req.params;
     const progress = queueService.getProgress(id);
-    const campaign = await prisma.campaign.findUnique({ where: { id } });
+    const campaign = await prisma.campaign.findUnique({
+      where: { id },
+      include: {
+        logs: {
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+
+    const liveProgress = progress || {
+      campaignId: campaign?.id,
+      status: campaign?.status,
+      total: campaign?.totalRecipients || 0,
+      processed: (campaign?.sentCount || 0) + (campaign?.failedCount || 0),
+      sent: campaign?.sentCount || 0,
+      failed: campaign?.failedCount || 0,
+      logs:
+        campaign?.logs?.map((l: any) => ({
+          id: l.id,
+          studentName: l.recipientName,
+          phone: l.recipientPhone,
+          status: l.status,
+          time: new Date(l.sentAt || l.createdAt).toLocaleTimeString('pt-BR'),
+          error: l.errorMessage,
+          renderedMessage: l.renderedMessage,
+        })) || [],
+    };
 
     res.json({
       success: true,
       data: {
         campaign,
-        liveProgress: progress,
+        liveProgress,
       },
     });
   } catch (err: any) {
