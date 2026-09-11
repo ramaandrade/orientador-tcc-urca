@@ -67,16 +67,15 @@ class QueueService {
     const active = this.activeCampaigns.get(campaignId);
     if (active) {
       active.isCancelled = true;
-      const prog = this.campaignProgress.get(campaignId);
-      if (prog) prog.status = 'CANCELLED';
-      prisma.campaign.update({
-        where: { id: campaignId },
-        data: { status: 'CANCELLED' }
-      }).catch(console.error);
       this.activeCampaigns.delete(campaignId);
-      return true;
     }
-    return false;
+    const prog = this.campaignProgress.get(campaignId);
+    if (prog) prog.status = 'CANCELLED';
+    prisma.campaign.update({
+      where: { id: campaignId },
+      data: { status: 'CANCELLED' }
+    }).catch(console.error);
+    return true;
   }
 
   public async retryFailed(campaignId: string): Promise<void> {

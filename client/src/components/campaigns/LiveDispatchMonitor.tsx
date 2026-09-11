@@ -73,11 +73,15 @@ export const LiveDispatchMonitor: React.FC<LiveDispatchMonitorProps> = ({
   };
 
   const handleCancel = async () => {
-    if (!confirm('Deseja realmente cancelar o disparo desta campanha?')) return;
     setActionLoading(true);
     try {
       await apiClient.cancelCampaign(campaignId);
-      await fetchStatus();
+      if (onClose) onClose();
+      if (onFinished) onFinished();
+    } catch (err) {
+      console.error('Erro ao cancelar:', err);
+      if (onClose) onClose();
+      if (onFinished) onFinished();
     } finally {
       setActionLoading(false);
     }

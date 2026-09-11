@@ -188,8 +188,12 @@ export const resumeCampaign = async (req: Request, res: Response): Promise<void>
 export const cancelCampaign = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const success = queueService.cancelCampaign(id);
-    res.json({ success, message: success ? 'Disparo cancelado' : 'Campanha não encontrada' });
+    queueService.cancelCampaign(id);
+    await prisma.campaign.update({
+      where: { id },
+      data: { status: 'CANCELLED' }
+    }).catch(() => {});
+    res.json({ success: true, message: 'Disparo cancelado com sucesso' });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }
