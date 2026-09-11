@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Campaign, CampaignProgress } from '../../types';
+import { Campaign, CampaignProgress, Student } from '../../types';
 import { apiClient } from '../../services/api';
 import {
   Play,
@@ -16,12 +16,14 @@ import {
 
 interface LiveDispatchMonitorProps {
   campaignId: string;
+  students?: Student[];
   onFinished?: () => void;
   onClose?: () => void;
 }
 
 export const LiveDispatchMonitor: React.FC<LiveDispatchMonitorProps> = ({
   campaignId,
+  students = [],
   onFinished,
   onClose,
 }) => {
@@ -115,6 +117,39 @@ export const LiveDispatchMonitor: React.FC<LiveDispatchMonitorProps> = ({
   const failed = progress?.failed || campaign?.failedCount || 0;
 
   const percentage = Math.min(100, Math.round((processed / (total || 1)) * 100));
+
+  const displayLogs = (progress?.logs && progress.logs.length > 0)
+    ? progress.logs
+    : (students || [])
+        .filter((s) => {
+          if (!campaign) return true;
+          if (campaign.targetGroup === 'ALL') return s.status === 'ACTIVE' && s.group !== 'CONCLUIDO';
+          if (campaign.targetGroup === 'CONCLUIDO') return s.group === 'CONCLUIDO';
+          return s.group === campaign.targetGroup && s.status === 'ACTIVE';
+        })
+        .map((st) => {
+          let rendered = (campaign?.messageContent || '')
+            .replace(/{nome}/g, st.name)
+            .replace(/{primeiro_nome}/g, st.name.split(' ')[0])
+            .replace(/{orientador}/g, st.advisor || 'Prof. Dr. Ramá Lucas')
+            .replace(/{tema}/g, st.topic || 'Pesquisa Científica')
+            .replace(/{titulo_pesquisa}/g, st.topic || 'Pesquisa Científica')
+            .replace(/{turma}/g, st.group)
+            .replace(/{prazo}/g, st.deadline || '15/12/2026')
+            .replace(/{data_defesa}/g, st.defenseDate || 'A definir')
+            .replace(/{nota}/g, st.grade || 'Pendente')
+            .replace(/{instituicao}/g, 'URCA');
+
+          return {
+            id: st.id,
+            studentName: st.name,
+            phone: st.phone,
+            status: 'PENDING',
+            time: 'Disponível',
+            renderedMessage: rendered,
+            error: undefined as string | undefined,
+          };
+        });
 
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
@@ -279,14 +314,17 @@ export const LiveDispatchMonitor: React.FC<LiveDispatchMonitorProps> = ({
 
       {/* Live Stream Logs */}
       <div>
-        <h4 className="font-bold text-xs text-slate-300 uppercase tracking-wider mb-3 flex items-center space-x-1.5">
-          <Clock className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Fila de Disparo e Destinatários</span>
-        </h4>
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-bold text-xs text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
+            <Clock className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Destinatários da Campanha ({displayLogs.length} alunos)</span>
+          </h4>
+          <span className="text-[10px] text-slate-400">Clique em 💬 Enviar para abrir no WhatsApp</span>
+        </div>
 
         <div className="max-h-72 overflow-y-auto space-y-2 pr-1 font-mono text-xs">
-          {progress?.logs && progress.logs.length > 0 ? (
-            progress.logs.map((log) => {
+          {displayLogs.length > 0 ? (
+            displayLogs.map((log) => {
               const cleanPhone = (log.phone || '').replace(/\D/g, '');
               const fullPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
               const msgToSend = log.renderedMessage || campaign?.messageContent || '';
@@ -317,7 +355,7 @@ export const LiveDispatchMonitor: React.FC<LiveDispatchMonitorProps> = ({
                       target="_blank"
                       rel="noreferrer"
                       className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold font-sans flex items-center space-x-1 shadow transition-all cursor-pointer"
-                      title="Abrir conversa no WhatsApp com a mensagem preenchida"
+                      title="Abrir conversa no WhatsApp com a mensagem preenchida para este discente"
                     >
                       <Send className="w-3 h-3" />
                       <span>💬 Enviar</span>
@@ -328,7 +366,7 @@ export const LiveDispatchMonitor: React.FC<LiveDispatchMonitorProps> = ({
             })
           ) : (
             <div className="py-6 text-center text-slate-500 font-sans text-xs">
-              Aguardando início dos registros de envio...
+              Nenhum discente encontrado para o público desta campanha.
             </div>
           )}
         </div>

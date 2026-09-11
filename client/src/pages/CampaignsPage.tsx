@@ -88,6 +88,7 @@ export const CampaignsPage: React.FC<CampaignsPageProps> = ({
           {activeMonitorCampaignId && (
             <LiveDispatchMonitor
               campaignId={activeMonitorCampaignId}
+              students={students}
               onFinished={onRefresh}
               onClose={() => onOpenMonitor(null)}
             />
