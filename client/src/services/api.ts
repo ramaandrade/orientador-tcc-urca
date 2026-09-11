@@ -348,15 +348,32 @@ export const apiClient = {
     const c = list.find((item) => item.id === id);
     if (!c) return null as any;
     const total = c.totalRecipients || 17;
-    const sent = c.sentCount || 17;
+    const sent = c.sentCount || total;
+    if (c.status === 'RUNNING' || c.status === 'PROCESSING' as any) {
+      c.status = 'COMPLETED';
+      setLocal('academic_campaigns', list);
+    }
+    const allLogs = getLocal<MessageLog[]>('academic_logs', []);
+    const campaignLogs = allLogs.filter((l) => l.campaignId === id || !l.campaignId);
+    
     return {
       campaign: c,
       liveProgress: {
+        campaignId: c.id,
+        status: c.status,
         total,
         sent,
         failed: c.failedCount || 0,
-        processed: sent + (c.failedCount || 0),
-        progressPercent: total > 0 ? Math.round((sent / total) * 100) : 100,
+        processed: total,
+        progressPercent: 100,
+        logs: campaignLogs.slice(0, 30).map((l) => ({
+          id: l.id,
+          studentName: l.recipientName,
+          phone: l.recipientPhone,
+          status: l.status,
+          time: new Date(l.sentAt || l.createdAt || Date.now()).toLocaleTimeString('pt-BR'),
+          renderedMessage: l.renderedMessage,
+        })),
       },
     };
   },

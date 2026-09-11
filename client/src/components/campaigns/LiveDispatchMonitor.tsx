@@ -262,43 +262,66 @@ export const LiveDispatchMonitor: React.FC<LiveDispatchMonitorProps> = ({
         </div>
       )}
 
+      {/* Cloud & Local Dispatch Explanation Banner */}
+      <div className="p-3.5 bg-emerald-950/40 border border-emerald-800/60 rounded-xl flex items-start gap-2.5 text-xs text-emerald-200">
+        <Send className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <p className="font-semibold text-emerald-100">Disparo via WhatsApp Web:</p>
+          <p className="text-emerald-300/90 text-[11px] leading-relaxed">
+            Clique no botão <strong>💬 Enviar</strong> ao lado de cada discente abaixo para abrir a conversa no WhatsApp com a mensagem personalizada pronta para envio. <em>(Para envio silencioso em lote 100% automático via robô, execute o sistema no computador local via localhost:5173 com o QR Code conectado)</em>.
+          </p>
+        </div>
+      </div>
+
       {/* Live Stream Logs */}
       <div>
         <h4 className="font-bold text-xs text-slate-300 uppercase tracking-wider mb-3 flex items-center space-x-1.5">
           <Clock className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Histórico de Entregas em Tempo Real</span>
+          <span>Fila de Disparo e Destinatários</span>
         </h4>
 
-        <div className="max-h-56 overflow-y-auto space-y-2 pr-1 font-mono text-xs">
+        <div className="max-h-72 overflow-y-auto space-y-2 pr-1 font-mono text-xs">
           {progress?.logs && progress.logs.length > 0 ? (
-            progress.logs.map((log) => (
-              <div
-                key={log.id}
-                className={`p-2.5 rounded-xl border flex items-center justify-between transition-all ${
-                  log.status === 'SENT'
-                    ? 'bg-emerald-950/30 border-emerald-900/50 text-emerald-300'
-                    : 'bg-rose-950/30 border-rose-900/50 text-rose-300'
-                }`}
-              >
-                <div className="flex items-center space-x-2.5">
-                  {log.status === 'SENT' ? (
+            progress.logs.map((log) => {
+              const cleanPhone = (log.phone || '').replace(/\D/g, '');
+              const fullPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+              const msgToSend = log.renderedMessage || campaign?.messageContent || '';
+              const waUrl = `https://api.whatsapp.com/send?phone=${fullPhone}&text=${encodeURIComponent(msgToSend)}`;
+
+              return (
+                <div
+                  key={log.id}
+                  className="p-2.5 rounded-xl border bg-slate-950/80 border-slate-800 text-slate-200 flex items-center justify-between transition-all hover:border-slate-700"
+                >
+                  <div className="flex items-center space-x-2.5 min-w-0 pr-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  ) : (
-                    <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-                  )}
-                  <div>
-                    <span className="font-semibold text-slate-100 font-sans">{log.studentName}</span>
-                    <span className="text-[11px] text-slate-400 ml-2">+{log.phone}</span>
-                    {log.error && (
-                      <span className="block text-[10px] text-rose-400 font-sans mt-0.5">
-                        Motivo: {log.error}
-                      </span>
-                    )}
+                    <div className="truncate">
+                      <span className="font-semibold text-slate-100 font-sans">{log.studentName}</span>
+                      <span className="text-[11px] text-slate-400 ml-2">+{log.phone}</span>
+                      {log.error && (
+                        <span className="block text-[10px] text-rose-400 font-sans mt-0.5">
+                          Motivo: {log.error}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 shrink-0">
+                    <span className="text-[10px] text-slate-500 font-sans">{log.time}</span>
+                    <a
+                      href={waUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold font-sans flex items-center space-x-1 shadow transition-all cursor-pointer"
+                      title="Abrir conversa no WhatsApp com a mensagem preenchida"
+                    >
+                      <Send className="w-3 h-3" />
+                      <span>💬 Enviar</span>
+                    </a>
                   </div>
                 </div>
-                <span className="text-[11px] text-slate-500 shrink-0">{log.time}</span>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="py-6 text-center text-slate-500 font-sans text-xs">
               Aguardando início dos registros de envio...

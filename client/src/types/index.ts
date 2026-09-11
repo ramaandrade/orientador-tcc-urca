@@ -72,6 +72,7 @@ export interface CampaignProgress {
     phone: string;
     status: string;
     time: string;
+    renderedMessage?: string;
     error?: string;
   }>;
 }
