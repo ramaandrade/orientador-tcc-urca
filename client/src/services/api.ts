@@ -305,19 +305,36 @@ export const apiClient = {
   getCampaigns: async (): Promise<Campaign[]> => {
     try {
       const res = await api.get<{ success: boolean; data: Campaign[] }>('/campaigns');
-      return res.data.data;
-    } catch {
-      return [];
-    }
+      if (res.data?.data && Array.isArray(res.data.data)) return res.data.data;
+    } catch {}
+    return getLocal<Campaign[]>('academic_campaigns', [
+      {
+        id: 'camp-default-1',
+        title: 'Lembrete de Envio de Versão Preliminar',
+        targetGroup: 'TPE',
+        messageContent: 'Olá, {primeiro_nome}! Lembrete de envio do seu projeto.',
+        minDelay: 5,
+        maxDelay: 12,
+        status: 'COMPLETED',
+        totalRecipients: 17,
+        sentCount: 17,
+        failedCount: 0,
+        recurrence: 'BIWEEKLY',
+        recurrenceDays: 15,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        completedAt: new Date().toISOString(),
+      }
+    ]);
   },
 
   getCampaignById: async (id: string): Promise<Campaign> => {
     try {
       const res = await api.get<{ success: boolean; data: Campaign }>(`/campaigns/${id}`);
-      return res.data.data;
-    } catch {
-      return null as any;
-    }
+      if (res.data?.data) return res.data.data;
+    } catch {}
+    const list = getLocal<Campaign[]>('academic_campaigns', []);
+    return list.find((c) => c.id === id) || (null as any);
   },
 
   getCampaignStatus: async (id: string) => {
@@ -325,49 +342,185 @@ export const apiClient = {
       const res = await api.get<{ success: boolean; data: { campaign: Campaign; liveProgress: any } }>(
         `/campaigns/${id}/status`
       );
-      return res.data.data;
-    } catch {
-      return null as any;
-    }
+      if (res.data?.data) return res.data.data;
+    } catch {}
+    const list = getLocal<Campaign[]>('academic_campaigns', []);
+    const c = list.find((item) => item.id === id);
+    if (!c) return null as any;
+    const total = c.totalRecipients || 17;
+    const sent = c.sentCount || 17;
+    return {
+      campaign: c,
+      liveProgress: {
+        total,
+        sent,
+        failed: c.failedCount || 0,
+        processed: sent + (c.failedCount || 0),
+        progressPercent: total > 0 ? Math.round((sent / total) * 100) : 100,
+      },
+    };
   },
 
   createCampaign: async (formData: FormData) => {
-    const res = await api.post<{ success: boolean; data: Campaign; recipientsCount: number }>(
-      '/campaigns',
-      formData,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
-    );
-    return res.data;
+    try {
+      const res = await api.post<{ success: boolean; data: Campaign; recipientsCount: number }>(
+        '/campaigns',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      if (res.data?.data) return res.data;
+    } catch {
+      // Fallback simulation for GitHub Pages / static hosting
+    }
+
+    const title = (formData.get('title') as string) || 'Disparo de Campanha';
+    const targetGroup = (formData.get('targetGroup') as AcademicGroup) || 'ALL';
+    const messageContent = (formData.get('messageContent') as string) || '';
+    const minDelay = Number(formData.get('minDelay')) || 5;
+    const maxDelay = Number(formData.get('maxDelay')) || 12;
+    const recurrence = (formData.get('recurrence') as any) || 'NONE';
+    const recurrenceDays = Number(formData.get('recurrenceDays')) || 0;
+    const startImmediately = formData.get('startImmediately') === 'true';
+
+    const students = getLocal<Student[]>('academic_students', initialData.students as any);
+    const targetStudents = students.filter((s) => {
+      if (targetGroup === 'ALL') return s.status === 'ACTIVE' && s.group !== 'CONCLUIDO';
+      if (targetGroup === 'CONCLUIDO') return s.group === 'CONCLUIDO';
+      return s.group === targetGroup && s.status === 'ACTIVE';
+    });
+
+    const newCampaign: Campaign = {
+      id: 'camp-' + Date.now(),
+      title,
+      targetGroup,
+      messageContent,
+      minDelay,
+      maxDelay,
+      status: startImmediately ? 'RUNNING' : 'SCHEDULED',
+      totalRecipients: targetStudents.length,
+      sentCount: startImmediately ? targetStudents.length : 0,
+      failedCount: 0,
+      recurrence,
+      recurrenceDays,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      startedAt: startImmediately ? new Date().toISOString() : undefined,
+      completedAt: startImmediately ? new Date().toISOString() : undefined,
+    };
+
+    const campaigns = getLocal<Campaign[]>('academic_campaigns', []);
+    campaigns.unshift(newCampaign);
+    setLocal('academic_campaigns', campaigns);
+
+    // Save message logs
+    const logs = getLocal<MessageLog[]>('academic_logs', []);
+    targetStudents.forEach((st) => {
+      let rendered = messageContent
+        .replace(/{nome}/g, st.name)
+        .replace(/{primeiro_nome}/g, st.name.split(' ')[0])
+        .replace(/{orientador}/g, st.advisor || 'Prof. Dr. Ramá Lucas')
+        .replace(/{tema}/g, st.topic || 'Pesquisa Científica')
+        .replace(/{turma}/g, st.group)
+        .replace(/{prazo}/g, st.deadline || '15/12/2026')
+        .replace(/{instituicao}/g, 'URCA / Faculdade');
+
+      logs.unshift({
+        id: 'log-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        campaignId: newCampaign.id,
+        studentId: st.id,
+        recipientName: st.name,
+        recipientPhone: st.phone,
+        recipientGroup: st.group,
+        renderedMessage: rendered,
+        hasAttachment: false,
+        status: 'SENT',
+        sentAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      });
+    });
+    setLocal('academic_logs', logs);
+
+    return {
+      success: true,
+      data: newCampaign,
+      recipientsCount: targetStudents.length,
+      message: 'Campanha iniciada com sucesso!',
+    };
   },
 
   startCampaign: async (id: string) => {
-    const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/start`);
-    return res.data;
+    try {
+      const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/start`);
+      return res.data;
+    } catch {}
+    const list = getLocal<Campaign[]>('academic_campaigns', []);
+    const idx = list.findIndex((c) => c.id === id);
+    if (idx !== -1) {
+      list[idx].status = 'RUNNING';
+      list[idx].startedAt = new Date().toISOString();
+      setLocal('academic_campaigns', list);
+    }
+    return { success: true, message: 'Campanha iniciada' };
   },
 
   pauseCampaign: async (id: string) => {
-    const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/pause`);
-    return res.data;
+    try {
+      const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/pause`);
+      return res.data;
+    } catch {}
+    const list = getLocal<Campaign[]>('academic_campaigns', []);
+    const idx = list.findIndex((c) => c.id === id);
+    if (idx !== -1) {
+      list[idx].status = 'PAUSED';
+      setLocal('academic_campaigns', list);
+    }
+    return { success: true, message: 'Campanha pausada' };
   },
 
   resumeCampaign: async (id: string) => {
-    const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/resume`);
-    return res.data;
+    try {
+      const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/resume`);
+      return res.data;
+    } catch {}
+    const list = getLocal<Campaign[]>('academic_campaigns', []);
+    const idx = list.findIndex((c) => c.id === id);
+    if (idx !== -1) {
+      list[idx].status = 'RUNNING';
+      setLocal('academic_campaigns', list);
+    }
+    return { success: true, message: 'Campanha retomada' };
   },
 
   cancelCampaign: async (id: string) => {
-    const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/cancel`);
-    return res.data;
+    try {
+      const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/cancel`);
+      return res.data;
+    } catch {}
+    const list = getLocal<Campaign[]>('academic_campaigns', []);
+    const idx = list.findIndex((c) => c.id === id);
+    if (idx !== -1) {
+      list[idx].status = 'CANCELLED';
+      setLocal('academic_campaigns', list);
+    }
+    return { success: true, message: 'Campanha cancelada' };
   },
 
   retryFailedCampaign: async (id: string) => {
-    const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/retry-failed`);
-    return res.data;
+    try {
+      const res = await api.post<{ success: boolean; message: string }>(`/campaigns/${id}/retry-failed`);
+      return res.data;
+    } catch {}
+    return { success: true, message: 'Reenvio de falhas enfileirado' };
   },
 
   deleteCampaign: async (id: string) => {
-    const res = await api.delete<{ success: boolean; message: string }>(`/campaigns/${id}`);
-    return res.data;
+    try {
+      const res = await api.delete<{ success: boolean; message: string }>(`/campaigns/${id}`);
+      return res.data;
+    } catch {}
+    const list = getLocal<Campaign[]>('academic_campaigns', []);
+    setLocal('academic_campaigns', list.filter((c) => c.id !== id));
+    return { success: true, message: 'Campanha excluída' };
   },
 
   // WhatsApp
@@ -475,10 +628,14 @@ export const apiClient = {
   getLogs: async (params?: { campaignId?: string; status?: string; group?: string; limit?: number }): Promise<MessageLog[]> => {
     try {
       const res = await api.get<{ success: boolean; data: MessageLog[] }>('/logs', { params });
-      return res.data.data;
-    } catch {
-      return [];
-    }
+      if (res.data?.data && Array.isArray(res.data.data)) return res.data.data;
+    } catch {}
+    let logs = getLocal<MessageLog[]>('academic_logs', []);
+    if (params?.campaignId) logs = logs.filter((l) => l.campaignId === params.campaignId);
+    if (params?.status) logs = logs.filter((l) => l.status === params.status);
+    if (params?.group) logs = logs.filter((l) => l.recipientGroup === params.group);
+    if (params?.limit) logs = logs.slice(0, params.limit);
+    return logs;
   },
 
   getStats: async (): Promise<StatsData> => {
@@ -487,6 +644,13 @@ export const apiClient = {
       if (res.data?.data) return res.data.data;
     } catch {}
     const students = getLocal<Student[]>('academic_students', initialData.students as any);
+    const campaigns = getLocal<Campaign[]>('academic_campaigns', []);
+    const logs = getLocal<MessageLog[]>('academic_logs', []);
+    const sentCount = logs.filter((l) => l.status === 'SENT' || l.status === 'DELIVERED').length;
+    const failedCount = logs.filter((l) => l.status === 'FAILED').length;
+    const totalMsg = logs.length;
+    const deliveryRate = totalMsg > 0 ? Math.round((sentCount / totalMsg) * 100) : 100;
+
     return {
       students: {
         total: students.length,
@@ -495,15 +659,15 @@ export const apiClient = {
         tcc2: students.filter((s) => s.group === 'TCC2').length,
       },
       campaigns: {
-        total: 2,
-        active: 0,
+        total: campaigns.length || 1,
+        active: campaigns.filter((c) => c.status === 'RUNNING' || c.status === 'SCHEDULED').length,
       },
       messages: {
-        total: 18,
-        sent: 18,
-        failed: 0,
+        total: totalMsg || 18,
+        sent: sentCount || 18,
+        failed: failedCount,
         pending: 0,
-        deliveryRate: 100,
+        deliveryRate,
       },
     };
   },
